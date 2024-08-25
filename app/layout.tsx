@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link
-          href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@200,300,400,500,700&display=swap"
+          href="https://api.fontshare.com/v2/css?f[]=satoshi@300,301,400,401,500,501,700,701&display=swap"
           rel="stylesheet"
         />
         <link
@@ -63,7 +63,7 @@ export default function RootLayout({
               closeButton={true}
               toastOptions={{
                 style: {
-                  fontFamily: `"Cabinet Grotesk", sans-serif`,
+                  fontFamily: `"Satoshi", sans-serif`,
                 },
               }}
             />

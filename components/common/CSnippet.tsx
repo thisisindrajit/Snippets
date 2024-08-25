@@ -13,14 +13,13 @@ import { Card, CardContent } from "../ui/card";
 import Markdown from "react-markdown";
 import { convertToPrettyDateFormatInLocalTimezone } from "@/utilities/commonUtilities";
 import CReferenceHolder from "@/components/holders/CReferenceHolder";
-import { CircleArrowRight} from "lucide-react";
+import { CircleArrowRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface ICSnippetProps {
   snippetId: string;
   showLinkIcon?: boolean;
-  generatedByAi?: boolean;
   title: string;
   requestorName: string | null;
   requestedOn: Date | null;
@@ -43,7 +42,6 @@ interface ICSnippetProps {
 const CSnippet: FC<ICSnippetProps> = ({
   snippetId,
   showLinkIcon = false,
-  generatedByAi = false,
   title,
   requestorName,
   requestedOn,
@@ -67,7 +65,7 @@ const CSnippet: FC<ICSnippetProps> = ({
   const getCurrentSlideText = (current: number) => {
     switch (current) {
       case 0:
-        return "🧑 What/Who";
+        return "❓ What/Who";
       case 1:
         return "🕒 When";
       case 2:
@@ -102,7 +100,7 @@ const CSnippet: FC<ICSnippetProps> = ({
       )}
     >
       {/* Title, type and request details */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1.5">
         <div className="flex gap-2 items-center justify-center w-fit">
           <div
             className={`text-lg/relaxed sm:text-xl/relaxed font-medium underline decoration-dotted underline-offset-8 ${
@@ -138,7 +136,7 @@ const CSnippet: FC<ICSnippetProps> = ({
         </div>
         <div className="flex gap-2 items-center justify-center w-fit font-medium">
           <div className="text-xs bg-accent text-accent-foreground py-1 px-2 w-fit rounded-lg">
-            5W1H {generatedByAi && `(AI generated)`}
+            5W1H (AI generated)
           </div>
           {references?.length > 0 && (
             <CReferenceHolder references={references} />

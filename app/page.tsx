@@ -1,4 +1,4 @@
-import TopBar from "@/components/TopBar";
+import CTopBar from "@/components/common/CTopBar";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
@@ -14,8 +14,8 @@ const Home = async () => {
 
   return (
     <div className="flex flex-col items-center justify-between gap-12 min-h-screen p-4 lg:p-6">
-      <TopBar />
-      <div className="flex flex-col gap-6">
+      <CTopBar />
+      <div className="flex flex-col gap-6 w-full">
         {/* Landing page grid */}
         <div className="flex flex-col lg:flex-row w-full gap-2 lg:gap-4">
           {/* First grid */}
@@ -37,7 +37,7 @@ const Home = async () => {
               <Separator className="bg-secondary" />
               <div className="text-base/loose sm:text-lg/loose text-justify">
                 Snippets is an{" "}
-                <span className="font-medium">
+                <span className="font-medium italic">
                   AI powered ed-tech social media platform
                 </span>{" "}
                 that aims to enhance your knowledge, one{" "}
@@ -65,7 +65,7 @@ const Home = async () => {
               showLikeSaveAndNotes={
                 SNIPPETS_SNIPPET_DETAILS.showLikeSaveAndNotes
               }
-              className="h-full lg:gap-2"
+              className="h-full lg:pb-8"
               capitalizeTitle={false}
             />
           </div>

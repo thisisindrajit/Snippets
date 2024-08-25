@@ -1,0 +1,14 @@
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+
+const Dashboard = async () => {
+  const user = await currentUser();
+
+  if (!user) {
+    redirect(`${process.env.NEXT_PUBLIC_BASE_URL}`);
+  }
+
+  return <div>This is the user dashboard.</div>;
+};
+
+export default Dashboard;

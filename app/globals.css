@@ -76,7 +76,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: "Cabinet Grotesk", sans-serif;
+    font-family: "Satoshi", sans-serif;
   }
 
   .top-bar-on-scroll {

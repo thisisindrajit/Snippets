@@ -15,7 +15,7 @@ export function ConvexClientProvider({ children }: { children: ReactNode }) {
       appearance={{
         layout: {
           logoImageUrl: "/logo.svg",
-          socialButtonsPlacement: "bottom",
+          socialButtonsPlacement: "top",
         },
       }}
     >

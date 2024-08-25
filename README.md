@@ -37,4 +37,4 @@ I was inspired to create Snippets because I saw how countless young people, incl
 <br>
 
 ### Other References
-- [Font - Cabinet Grotesk](https://www.fontshare.com/fonts/cabinet-grotesk)
+- [Font - Satoshi](https://www.fontshare.com/fonts/cabinet-grotesk)
