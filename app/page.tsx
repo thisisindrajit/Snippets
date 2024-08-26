@@ -1,4 +1,4 @@
-import CTopBar from "@/components/common/CTopBar";
+import TopBar from "@/components/TopBar";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
@@ -14,7 +14,7 @@ const Home = async () => {
 
   return (
     <div className="flex flex-col items-center justify-between gap-12 min-h-screen p-4 lg:p-6">
-      <CTopBar />
+      <TopBar />
       <div className="flex flex-col gap-6 w-full">
         {/* Landing page grid */}
         <div className="flex flex-col lg:flex-row w-full gap-2 lg:gap-4">
