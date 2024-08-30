@@ -38,3 +38,4 @@ I was inspired to create Snippets because I saw how countless young people, incl
 
 ### Other References
 - [Font - Satoshi](https://www.fontshare.com/fonts/cabinet-grotesk)
+- [Storing users in Convex from Clerk via webhooks](https://docs.convex.dev/auth/database-auth)
