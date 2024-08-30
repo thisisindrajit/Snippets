@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import SideBar from "@/components/common/Sidebar";
 import Tabs from "@/components/common/Tabs";
 import { Separator } from "@/components/ui/separator";
+import { inngest } from "@/inngest";
 
 const SavedLayout = async ({
   children, // will be a page or nested layout
@@ -17,10 +18,25 @@ const SavedLayout = async ({
     redirect(`${process.env.NEXT_PUBLIC_BASE_URL}`);
   }
 
+  const inngestSnippetGenerationFunctionCaller = async (
+    searchQuery: string,
+    userId?: string | null
+  ) => {
+    "use server";
+
+    await inngest.send({
+      name: "app/generate.snippet",
+      data: {
+        searchQuery: searchQuery,
+        userId: userId,
+      },
+    });
+  };
+
   return (
     <div className="flex flex-col gap-12 p-4 lg:p-6">
       <TopBar />
-      <CSearchBar />
+      <CSearchBar searchHandler={inngestSnippetGenerationFunctionCaller} />
       {/* Tabs (will be shown in smaller screens) */}
       <Tabs active={2} />
       <div className="flex gap-4 w-full 2xl:w-[90%] mx-auto">

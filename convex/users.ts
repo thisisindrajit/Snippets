@@ -2,6 +2,15 @@ import { internalMutation, query, QueryCtx } from "./_generated/server";
 import { UserJSON } from "@clerk/backend";
 import { v, Validator } from "convex/values";
 
+export const getUserFromExternalId = query({
+  args: {
+    externalId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await userByExternalId(ctx, args.externalId);
+  },
+});
+
 export const current = query({
   args: {},
   handler: async (ctx) => {
@@ -54,6 +63,9 @@ export async function getCurrentUserOrThrow(ctx: QueryCtx) {
 
 export async function getCurrentUser(ctx: QueryCtx) {
   const identity = await ctx.auth.getUserIdentity();
+
+  console.log("I", identity);
+
   if (identity === null) {
     return null;
   }

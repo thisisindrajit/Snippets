@@ -12,9 +12,9 @@ export default defineSchema({
     totalRewards: v.number(),
   }).index("byExternalId", ["externalId"]),
   user_notifications: defineTable({
-    notification_creator: v.id("users"),
-    notification_receiver: v.id("users"),
-    notification_type: v.id("list_notification_types"),
+    notification_creator: v.optional(v.id("users")),
+    notification_receiver: v.optional(v.id("users")),
+    notification_type: v.optional(v.id("list_notification_types")),
     notification: v.string(),
     is_read: v.boolean(),
     is_cleared: v.boolean(),
@@ -26,16 +26,16 @@ export default defineSchema({
   }),
   snippets: defineTable({
     title: v.string(),
-    likes_count: v.union(v.number(), v.literal(0)),
+    likes_count: v.number(),
     generated_by_ai: v.boolean(),
-    requested_by: v.id("users"),
+    requested_by: v.optional(v.id("users")),
   }),
   snippet_type_and_data_mapping: defineTable({
     snippet_id: v.id("snippets"),
-    type: v.id("list_snippet_types"),
+    type: v.optional(v.id("list_snippet_types")),
     data: v.any(), // Check if this can be changed to a more specific type
     references: v.optional(
-      v.object({ link: v.string(), title: v.string(), description: v.string() })
+      v.array(v.object({ link: v.string(), title: v.string(), description: v.string() }))
     ),
   }),
   snippet_likes: defineTable({

@@ -15,6 +15,11 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as http from "../http.js";
+import type * as list_notification_types from "../list_notification_types.js";
+import type * as list_snippet_types from "../list_snippet_types.js";
+import type * as snippet_type_and_data_mapping from "../snippet_type_and_data_mapping.js";
+import type * as snippets from "../snippets.js";
+import type * as user_notifications from "../user_notifications.js";
 import type * as users from "../users.js";
 
 /**
@@ -27,6 +32,11 @@ import type * as users from "../users.js";
  */
 declare const fullApi: ApiFromModules<{
   http: typeof http;
+  list_notification_types: typeof list_notification_types;
+  list_snippet_types: typeof list_snippet_types;
+  snippet_type_and_data_mapping: typeof snippet_type_and_data_mapping;
+  snippets: typeof snippets;
+  user_notifications: typeof user_notifications;
   users: typeof users;
 }>;
 export declare const api: FilterApi<

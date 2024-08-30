@@ -4,20 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight } from "lucide-react";
 import { FC, ChangeEvent, FormEvent, useState } from "react";
-// import { useAuth } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
 
-const CSearchBar: FC = () => {
+const CSearchBar: FC<{
+  searchHandler: (searchQuery: string, userId?: string | null) => Promise<void>;
+}> = ({ searchHandler }) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [width, setWidth] = useState(18);
-  // const { userId } = useAuth();
+  const { userId } = useAuth();
 
   const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
     setWidth(e.target.value.length > 18 ? e.target.value.length : 18);
   };
 
-  const submitHandler = (e: FormEvent) => {
+  const submitHandler = async (e: FormEvent) => {
     e.preventDefault();
 
     document.getElementById("search-input")?.blur();
@@ -32,14 +34,29 @@ const CSearchBar: FC = () => {
     toast.success(
       <div className="text-sm/loose">
         Hurray 🥳, your request for search query{" "}
-        <span className="font-semibold">{searchQuery}</span> has been
-        queued! You will receive a notification when the AI generated snippet is
+        <span className="font-semibold">{searchQuery}</span> has been queued!
+        You will receive a notification when the AI generated snippet is
         available. Meanwhile you can check out the trending snippets 😎.
       </div>,
       {
         duration: 10000,
       }
     );
+
+    try {
+      await searchHandler(formattedSearchQuery, userId);
+    } catch (error) {
+      toast.error(
+        <div className="text-sm/loose">
+          Error while generating snippet for search query{" "}
+          <span className="font-semibold italic">{searchQuery}</span>! Please
+          try again.
+        </div>,
+        {
+          duration: 10000,
+        }
+      );
+    }
   };
 
   return (

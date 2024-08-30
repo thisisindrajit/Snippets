@@ -1,6 +1,6 @@
 export const APP_NAME = "Snippets";
 export const APP_DESCRIPTION =
-  "Snippets - Where artificial intelligence meets intellectual curiosity.";
+  "Snippets - Where every scroll inspires learning.";
 export const SNIPPETS_SNIPPET_DETAILS = {
   id: "1",
   title: "Snippets",
