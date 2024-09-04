@@ -55,18 +55,17 @@ const Home = async () => {
               title={SNIPPETS_SNIPPET_DETAILS.title}
               requestedOn={null}
               requestorName={null}
-              whatOrWho={SNIPPETS_SNIPPET_DETAILS.whatOrWho}
+              what={SNIPPETS_SNIPPET_DETAILS.what}
               why={SNIPPETS_SNIPPET_DETAILS.why}
               when={SNIPPETS_SNIPPET_DETAILS.when}
               where={SNIPPETS_SNIPPET_DETAILS.where}
               how={SNIPPETS_SNIPPET_DETAILS.how}
               amazingFacts={SNIPPETS_SNIPPET_DETAILS.amazingFacts}
-              references={[]}
-              showLikeSaveAndNotes={
-                SNIPPETS_SNIPPET_DETAILS.showLikeSaveAndNotes
-              }
+              references={SNIPPETS_SNIPPET_DETAILS.references}
+              tags={SNIPPETS_SNIPPET_DETAILS.tags}
               className="h-full lg:pb-8"
-              capitalizeTitle={false}
+              showLikeSaveAndNotes={false}
+              showLinkIcon={false}
             />
           </div>
         </div>

@@ -4,6 +4,26 @@ import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import * as cheerio from "cheerio";
 import { DocumentInterface } from "@langchain/core/documents";
 
+// Utility function to retry a function for a given number of times
+export async function retryFunction(fn: any, retries = 3) {
+  let attempt = 0;
+  while (attempt < retries) {
+    try {
+      // Attempt to execute the function
+      return await fn();
+    } catch (error) {
+      attempt++;
+
+      if (attempt >= retries) {
+        console.error(error);
+        throw new Error(
+          `Failed to execute function after ${retries} attempt(s)!`
+        );
+      }
+    }
+  }
+}
+
 // Utility function for fetching search results for a given topic from Serper API
 export async function searchForSources(topic: string): Promise<string> {
   const serperApiKey = process.env.SERPER_API_KEY;

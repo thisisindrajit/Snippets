@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useEffect, useState } from "react";
+import { FC, Fragment, useEffect, useState } from "react";
 import {
   Carousel,
   CarouselApi,
@@ -13,52 +13,62 @@ import { Card, CardContent } from "../ui/card";
 import Markdown from "react-markdown";
 import { convertToPrettyDateFormatInLocalTimezone } from "@/utilities/commonUtilities";
 import CReferenceHolder from "@/components/holders/CReferenceHolder";
-import { CircleArrowRight } from "lucide-react";
+import { Bookmark, CircleArrowRight, Heart, Share } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import DialogHolder from "../holders/DialogHolder";
+import CShareDialogContentHolder from "../holders/CShareDialogHolder";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Id } from "@/convex/_generated/dataModel";
+import { useAuth } from "@clerk/nextjs";
 
 interface ICSnippetProps {
-  snippetId: string;
-  showLinkIcon?: boolean;
+  snippetId: Id<"snippets">;
   title: string;
+  requestedBy?: Id<"users">;
   requestorName: string | null;
   requestedOn: Date | null;
   savedOn?: Date | null;
-  whatOrWho: string[];
+  what: string[];
   when: string[];
   where: string[];
   why: string[];
   how: string[];
   amazingFacts: string[];
   references: { link: string; title: string; description: string }[];
-  showLikeSaveAndNotes?: boolean;
-  isLikedByUser?: boolean;
-  isSavedByUser?: boolean;
-  note?: string;
+  tags: string[];
+  likesCount?: number;
   className?: string;
   capitalizeTitle?: boolean;
+  showLinkIcon?: boolean;
+  showLikeSaveAndNotes?: boolean;
 }
 
 const CSnippet: FC<ICSnippetProps> = ({
   snippetId,
-  showLinkIcon = false,
   title,
   requestorName,
   requestedOn,
   savedOn,
-  whatOrWho,
+  what,
   when,
   where,
   why,
   how,
   amazingFacts,
   references,
+  tags,
+  likesCount,
   className,
   capitalizeTitle = true,
+  showLinkIcon = false,
+  showLikeSaveAndNotes = true,
 }) => {
-  const categoryArray = [whatOrWho, when, where, why, how];
+  const { userId } = useAuth();
+  const categoryArray = [what, when, where, why, how];
 
-  const [api, setApi] = useState<CarouselApi>();
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(5);
 
@@ -79,18 +89,117 @@ const CSnippet: FC<ICSnippetProps> = ({
     }
   };
 
+  let handleLike = () => {};
+  let handleSave = () => {};
+  let isLikedByUser: boolean = false;
+  let isSavedByUser: boolean = false;
+
+  const userByExternalId = useQuery(api.users.getUserByExternalId, {
+    externalId: userId ?? undefined,
+  });
+
+  const likeDetails = useQuery(api.likes.getLikeDetails, {
+    snippetId: userId ? snippetId : undefined,
+    likedBy: userByExternalId?._id,
+  });
+
+  isLikedByUser = !!likeDetails;
+
+  const likeMutation = useMutation(
+    api.likes.likeOrUnlikeSnippet
+  ).withOptimisticUpdate((localStore, args) => {
+    const { snippetId, isLiked } = args;
+    const currentSnippet = localStore.getQuery(api.snippets.getSnippetById, {
+      snippetId,
+    });
+
+    if (currentSnippet) {
+      localStore.setQuery(
+        api.snippets.getSnippetById,
+        { snippetId },
+        {
+          ...currentSnippet,
+          likes_count: isLiked
+            ? currentSnippet.likes_count + 1
+            : currentSnippet.likes_count - 1,
+        }
+      );
+    }
+
+    localStore.setQuery(
+      api.likes.getLikeDetails,
+      {
+        snippetId: snippetId,
+        likedBy: userByExternalId?._id,
+      },
+      isLiked
+        ? {
+            _id: crypto.randomUUID() as Id<"likes">,
+            _creationTime: Date.now(),
+            snippet_id: snippetId,
+            liked_by: userByExternalId?._id as Id<"users">,
+          }
+        : null
+    );
+  });
+
+  handleLike = async () => {
+    await likeMutation({
+      snippetId: snippetId,
+      isLiked: !isLikedByUser,
+      modifiedBy: userByExternalId?._id,
+    });
+  };
+
+  const saveDetails = useQuery(api.saves.getSaveDetails, {
+    snippetId: userId ? snippetId : undefined,
+    savedBy: userByExternalId?._id,
+  });
+
+  isSavedByUser = !!saveDetails;
+
+  const saveMutation = useMutation(
+    api.saves.saveOrUnsaveSnippet
+  ).withOptimisticUpdate((localStore, args) => {
+    const { isSaved } = args;
+
+    localStore.setQuery(
+      api.saves.getSaveDetails,
+      {
+        snippetId: snippetId,
+        savedBy: userByExternalId?._id,
+      },
+      isSaved
+        ? {
+            _id: crypto.randomUUID() as Id<"saves">,
+            _creationTime: Date.now(),
+            snippet_id: snippetId,
+            saved_by: userByExternalId?._id as Id<"users">,
+          }
+        : null
+    );
+  });
+
+  handleSave = async () => {
+    await saveMutation({
+      snippetId: snippetId,
+      isSaved: !isSavedByUser,
+      modifiedBy: userByExternalId?._id,
+    });
+  };
+
   useEffect(() => {
-    if (!api) {
+    if (!carouselApi) {
       return;
     }
 
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap());
+    setCount(carouselApi.scrollSnapList().length);
+    setCurrent(carouselApi.selectedScrollSnap());
 
-    api.on("select", () => {
-      setCurrent(api.selectedScrollSnap());
+    carouselApi.on("select", () => {
+      setCurrent(carouselApi.selectedScrollSnap());
     });
-  }, [api]);
+  }, [carouselApi]);
 
   return (
     <div
@@ -99,7 +208,7 @@ const CSnippet: FC<ICSnippetProps> = ({
         className
       )}
     >
-      {/* Title, type and request details */}
+      {/* Title, type, request details and tags */}
       <div className="flex flex-col gap-1.5">
         <div className="flex gap-2 items-center justify-center w-fit">
           <div
@@ -142,6 +251,20 @@ const CSnippet: FC<ICSnippetProps> = ({
             <CReferenceHolder references={references} />
           )}
         </div>
+        <div className="flex flex-wrap gap-2 mt-2">
+          {tags &&
+            tags.length > 0 &&
+            tags.slice(0, 5).map((tag, index) => {
+              return (
+                <div
+                  key={index}
+                  className="text-xs bg-primary/5 border border-primary font-medium text-primary py-1 px-2 w-fit rounded-lg"
+                >
+                  {tag}
+                </div>
+              );
+            })}
+        </div>
       </div>
       {/* 5W1H carousel */}
       <div className="w-full md:w-4/5 m-auto flex flex-col gap-3">
@@ -150,7 +273,7 @@ const CSnippet: FC<ICSnippetProps> = ({
             {getCurrentSlideText(current)}
           </div>
         </div>
-        <Carousel setApi={setApi} opts={{ loop: true }}>
+        <Carousel setApi={setCarouselApi} opts={{ loop: true }}>
           <CarouselContent>
             {categoryArray.map((content, index) => (
               <CarouselItem key={index}>
@@ -187,7 +310,7 @@ const CSnippet: FC<ICSnippetProps> = ({
       </div>
       {/* Amazing facts */}
       {amazingFacts?.length > 0 && (
-        <div className="bg-accent/35 p-3 rounded-lg flex flex-col gap-4">
+        <div className="bg-accent/50 p-3 rounded-lg flex flex-col gap-4">
           <span className="bg-background text-foreground border border-foreground p-2 rounded-md w-fit">
             {`🤯 Amazing facts`}
           </span>
@@ -198,6 +321,50 @@ const CSnippet: FC<ICSnippetProps> = ({
               </li>
             ))}
           </ul>
+        </div>
+      )}
+      {showLikeSaveAndNotes && (
+        <div className="flex items-center w-fit gap-2 h-10 select-none">
+          <div
+            className="bg-red-50 flex items-center justify-center gap-1.5 text-sm w-fit text-red-600 p-2.5 sm:px-4 sm:py-3 h-full rounded-md cursor-pointer border border-red-600"
+            onClick={handleLike}
+          >
+            {isLikedByUser ? (
+              <Heart className="h-4 w-4 fill-red-600" />
+            ) : (
+              <Heart className="h-4 w-4" />
+            )}
+            {likesCount}
+          </div>
+          <div
+            className="bg-orange-50 flex items-center justify-center gap-1.5 text-sm w-fit text-orange-600 p-2.5 sm:px-4 sm:py-3 h-full rounded-md cursor-pointer border border-orange-600"
+            onClick={handleSave}
+          >
+            {isSavedByUser ? (
+              <Fragment>
+                <Bookmark className="h-4 w-4 fill-orange-600" />
+                <span>Saved</span>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <Bookmark className="h-4 w-4" />
+                <span>Save</span>
+              </Fragment>
+            )}
+          </div>
+          <DialogHolder
+            dialogTrigger={
+              <div className="bg-emerald-50 text-sm w-fit text-emerald-600 rounded-md cursor-pointer border border-emerald-600 p-2.5 sm:p-3 h-full aspect-square flex items-center justify-center">
+                <Share className="h-4 w-4" />
+              </div>
+            }
+            title="Share snippet"
+          >
+            <CShareDialogContentHolder
+              title={title}
+              link={`${process.env.NEXT_PUBLIC_BASE_URL}/snippet/${snippetId}`}
+            />
+          </DialogHolder>
         </div>
       )}
     </div>

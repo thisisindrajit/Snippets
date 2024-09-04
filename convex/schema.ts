@@ -11,14 +11,14 @@ export default defineSchema({
     primaryEmail: v.union(v.string(), v.null()),
     totalRewards: v.number(),
   }).index("byExternalId", ["externalId"]),
-  user_notifications: defineTable({
+  notifications: defineTable({
     notification_creator: v.optional(v.id("users")),
     notification_receiver: v.optional(v.id("users")),
     notification_type: v.optional(v.id("list_notification_types")),
     notification: v.string(),
     is_read: v.boolean(),
     is_cleared: v.boolean(),
-  }),
+  }).index("byReceiver", ["notification_receiver"]),
   rewards: defineTable({
     rewarded_user_id: v.id("users"),
     rewarded_xp: v.number(),
@@ -27,30 +27,28 @@ export default defineSchema({
   snippets: defineTable({
     title: v.string(),
     likes_count: v.number(),
-    generated_by_ai: v.boolean(),
     requested_by: v.optional(v.id("users")),
-  }),
-  snippet_type_and_data_mapping: defineTable({
-    snippet_id: v.id("snippets"),
+    requestor_name: v.string(),
     type: v.optional(v.id("list_snippet_types")),
-    data: v.any(), // Check if this can be changed to a more specific type
+    data: v.any(),
     references: v.optional(
       v.array(v.object({ link: v.string(), title: v.string(), description: v.string() }))
     ),
+    tags: v.optional(v.array(v.string())),
   }),
-  snippet_likes: defineTable({
+  likes: defineTable({
     snippet_id: v.id("snippets"),
     liked_by: v.id("users"),
-  }),
-  snippet_saves: defineTable({
+  }).index("bySnippetIdAndLikedBy", ["snippet_id", "liked_by"]),
+  saves: defineTable({
     snippet_id: v.id("snippets"),
     saved_by: v.id("users"),
-  }),
-  snippet_notes: defineTable({
+  }).index("bySnippetIdAndSavedBy", ["snippet_id", "saved_by"]),
+  notes: defineTable({
     snippet_id: v.id("snippets"),
     noted_by: v.id("users"),
     note: v.string(),
-  }),
+  }).index("bySnippetIdAndNotedBy", ["snippet_id", "noted_by"]),
   list_notification_types: defineTable({
     notification_type: v.string(),
   }),

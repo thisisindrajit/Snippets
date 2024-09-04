@@ -2,11 +2,15 @@ import { internalMutation, query, QueryCtx } from "./_generated/server";
 import { UserJSON } from "@clerk/backend";
 import { v, Validator } from "convex/values";
 
-export const getUserFromExternalId = query({
+export const getUserByExternalId = query({
   args: {
-    externalId: v.string(),
+    externalId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    if (!args.externalId) {
+      return null;
+    }
+
     return await userByExternalId(ctx, args.externalId);
   },
 });

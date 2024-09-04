@@ -10,7 +10,7 @@ export const createNotification = mutation({
     notification: v.string()
   },
   handler: async (ctx, args) => {
-    const newNotificationId = await ctx.db.insert("user_notifications", {
+    const newNotificationId = await ctx.db.insert("notifications", {
       notification_creator: args.notification_creator,
       notification_receiver: args.notification_receiver,
       notification_type: args.notification_type,

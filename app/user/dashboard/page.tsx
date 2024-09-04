@@ -1,3 +1,4 @@
+import CSnippetsHolder from "@/components/common/CSnippetsHolder";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -8,7 +9,7 @@ const Dashboard = async () => {
     redirect(`${process.env.NEXT_PUBLIC_BASE_URL}`);
   }
 
-  return <div>This is the user dashboard.</div>;
+  return <CSnippetsHolder />;
 };
 
 export default Dashboard;

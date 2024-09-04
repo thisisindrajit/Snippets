@@ -1,10 +1,12 @@
+import { Id } from "@/convex/_generated/dataModel";
+
 export const APP_NAME = "Snippets";
 export const APP_DESCRIPTION =
   "Snippets - Where every scroll inspires learning.";
 export const SNIPPETS_SNIPPET_DETAILS = {
-  id: "1",
+  id: "1" as Id<"snippets">,
   title: "Snippets",
-  whatOrWho: [
+  what: [
     "Snippets is an **AI-powered ed-tech social media platform** that generates and presents bite-sized, comprehensive content on user-requested topics.",
     "It features AI-generated educational snippets based on the 5W1H framework along with a **social media-style infinite scroll** functionality.",
   ],
@@ -25,5 +27,6 @@ export const SNIPPETS_SNIPPET_DETAILS = {
     "Users interact with the platform by **inputting topics of interest and swiping through AI-generated snippets.**",
   ],
   amazingFacts: [],
-  showLikeSaveAndNotes: false,
+  references: [],
+  tags: ["AI", "ed-tech", "social media", "learning", "bite-sized"],
 };
