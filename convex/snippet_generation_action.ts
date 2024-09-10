@@ -145,11 +145,10 @@ export const generateSnippet = action({
           role: "system",
           content: `Here is my topic - ${searchQuery}. Create a comprehensive summary of the given topic using the 5W1H framework (What/Who, Why, When, Where, How). For each category, provide an array of 2 to 3 complete, grammatically correct sentences. Use simple, concise language and include interesting facts. In each category:
               1.Ensure the information is accurate and relevant to the main topic, avoiding any speculative or unsupported details.
-              2.Highlight 2-4 important words or phrases in each sentence using markdown bold format.
+              2.Make sure to highlight 2-4 important words or phrases in each sentence using markdown bold format.
               3.Choose highlights that are key concepts, important terms, or significant details related to the category and main topic.
               4.Prioritize highlighting words that are separate words or phrases, rather than parts of a larger word or phrase.
-              5.At least 1 sentence in each category must contain highlighted words.
-              6.DO NOT HIGHLIGHT the main topic.
+              5.Minimum 2 sentences in each category must contain highlighted words.
               Present the result as a JSON object with these keys: what, why, when, where, how, amazingfacts and tags. Include 3 amazing, unknown and interesting facts about the topic in the amazingfacts array if available. Also include 5 general tags about the topic in the tags array. Do not include hashes and return just the tags. The tags must be in such a way that it describes the topic in a general manner. Focus on creating a broadly applicable summary, avoiding overly specific details from any provided context. The summary should be informative and relevant even without specific context. If you lack sufficient credible information about the topic, return only an EMPTY OBJECT.`,
         },
         {
@@ -161,6 +160,7 @@ export const generateSnippet = action({
         },
       ],
       model: "llama3-70b-8192",
+      max_tokens: 8192,
       response_format: { type: "json_object" },
     });
 
