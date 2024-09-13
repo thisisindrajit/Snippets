@@ -1,0 +1,9 @@
+- [X] Create notification icon and add notifications
+- [ ] Develop logic for saved snippets and notes
+    - Saved snippets similar logic -> q.or(...deletedIds.map(id => q.eq(q.field("relation"), id))) [https://discord.com/channels/1019350475847499849/1124781236318109756]
+- [X] Add full text search for notes
+- [ ] Add vector search to show similar snippets for a snippet
+    - [ ] Modify prompt to include abstract and add code to create embedding of abstract and store in DB
+- [ ] Create scheduler to send email once user is signed up
+- [ ] Remove reward related code and tables
+    - [ ] Create leaderboard page if possible

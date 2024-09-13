@@ -9,8 +9,6 @@ import {
   searchForSources,
 } from "../utilities/commonUtilities";
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-
 type TSnippet = {
   what: string;
   why: string;
@@ -18,8 +16,12 @@ type TSnippet = {
   where: string;
   how: string;
   amazingfacts?: string[];
+  abstract?: string;
+  abstract_embedding?: number[];
   tags?: string[];
 };
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export const generateSnippet = action({
   args: { searchQuery: v.optional(v.string()), userId: v.optional(v.string()) },
@@ -47,7 +49,7 @@ export const generateSnippet = action({
               The query should:
               1.Be no longer than 5-7 words.
               2.Include the most relevant keywords related to the topic.
-              3.Include 'overview', 'introduction' or 'wiki' if applicable to focus on general information.
+              3.Include 'overview' or 'introduction' if applicable to focus on general information.
               4.Do not add any quotation marks or extra words.
               Return only the search query string, without any additional explanation or formatting. If you don't have any information about the input, just return NO INFORMATION.`,
         },
@@ -149,7 +151,7 @@ export const generateSnippet = action({
               3.Choose highlights that are key concepts, important terms, or significant details related to the category and main topic.
               4.Prioritize highlighting words that are separate words or phrases, rather than parts of a larger word or phrase.
               5.Minimum 2 sentences in each category must contain highlighted words.
-              Present the result as a JSON object with these keys: what, why, when, where, how, amazingfacts and tags. Include 3 amazing, unknown and interesting facts about the topic in the amazingfacts array if available. Also include 5 general tags about the topic in the tags array. Do not include hashes and return just the tags. The tags must be in such a way that it describes the topic in a general manner. Focus on creating a broadly applicable summary, avoiding overly specific details from any provided context. The summary should be informative and relevant even without specific context. If you lack sufficient credible information about the topic, return only an EMPTY OBJECT.`,
+              Present the result as a JSON object with these keys: what, why, when, where, how, amazingfacts, abstract and tags. Include 3 amazing, unknown and interesting facts about the topic in the amazingfacts array if available. Include a short abstract about the topic within 100 words in abstract key. Include 5 general tags about the topic in the tags array. Do not include hashes and return just the tags. The tags must be in such a way that it describes the topic in a general manner. Focus on creating a broadly applicable summary, avoiding overly specific details from any provided context. The summary should be informative and relevant even without specific context. If you lack sufficient credible information about the topic, return only an EMPTY OBJECT.`,
         },
         {
           role: "user",
@@ -208,6 +210,8 @@ export const generateSnippet = action({
       )?._id, // For now, only generating 5W1H type snippets
       data: JSON.parse(generatedSnippet) as TSnippet,
       tags: (JSON.parse(generatedSnippet) as TSnippet)?.tags,
+      abstract: (JSON.parse(generatedSnippet) as TSnippet)?.abstract,
+      abstract_embedding: undefined,
       references: similarTextChunksAndReferences?.references ?? undefined,
     });
 

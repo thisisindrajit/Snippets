@@ -7,6 +7,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import CTopBarHolder from "./CTopBarHolder";
 import Link from "next/link";
 import { Trophy } from "lucide-react";
+import CNotificationHolder from "../holders/CNotificationHolder";
 
 const TopBar: FC = async () => {
   const user = await currentUser();
@@ -25,9 +26,10 @@ const TopBar: FC = async () => {
       {/* User menu button (if signed in) or SignIn button (if signed out) */}
       <SignedIn>
         <div className="flex items-center justify-center gap-2.5">
-          <div className="flex gap-1.5 items-center justify-center text-sm text-amber-500 bg-background py-1 px-2 rounded-lg border border-amber-500 cursor-pointer h-8">
+          <div className="flex gap-1.5 items-center justify-center text-sm text-amber-500 bg-background py-1 px-2 rounded-lg border border-amber-500 cursor-pointer h-7">
             <Trophy className="h-4 w-4" />0 XP
           </div>
+          <CNotificationHolder />
           <UserButton
             appearance={{
               elements: {

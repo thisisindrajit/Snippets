@@ -31,10 +31,15 @@ export default defineSchema({
     requestor_name: v.string(),
     type: v.optional(v.id("list_snippet_types")),
     data: v.any(),
+    abstract: v.optional(v.string()),
+    abstract_embedding: v.optional(v.array(v.float64())),
     references: v.optional(
       v.array(v.object({ link: v.string(), title: v.string(), description: v.string() }))
     ),
     tags: v.optional(v.array(v.string())),
+  }).vectorIndex("byAbstractEmbedding", {
+    vectorField: "abstract_embedding",
+    dimensions: 768
   }),
   likes: defineTable({
     snippet_id: v.id("snippets"),
@@ -48,7 +53,10 @@ export default defineSchema({
     snippet_id: v.id("snippets"),
     noted_by: v.id("users"),
     note: v.string(),
-  }).index("bySnippetIdAndNotedBy", ["snippet_id", "noted_by"]),
+  }).index("bySnippetIdAndNotedBy", ["snippet_id", "noted_by"]).searchIndex("searchNote", {
+    searchField: "note",
+    filterFields: ["noted_by"],
+  }),
   list_notification_types: defineTable({
     notification_type: v.string(),
   }),
