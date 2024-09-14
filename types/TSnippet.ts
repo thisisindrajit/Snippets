@@ -1,4 +1,4 @@
-type TSnippet = {
+export type TSnippet = {
   what: string;
   why: string;
   when: string;

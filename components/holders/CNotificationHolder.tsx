@@ -27,6 +27,9 @@ const CNotificationHolder: FC = () => {
     const notifications = useQuery(api.notifications.getNotificationsByUserId, {
         userId: userByExternalId?._id ?? undefined,
     });
+
+    const [notificationBadgeCount, setNotificationBadgeCount] =
+        useState<number>(0);
     const [lastNotificationTimestamp, setLastNotificationTimestamp] = useState<Date>(notifications && notifications.length > 0 ? new Date(notifications[0]._creationTime) : new Date());
 
     useEffect(() => {
@@ -41,20 +44,31 @@ const CNotificationHolder: FC = () => {
                         new Date(notification._creationTime) > lastNotificationTimestamp
                 );
 
-                toast.info(`You have ${
-                    newNotifications.length === 1
-                      ? `${newNotifications.length} new notification`
-                      : `${newNotifications.length} new notifications`
-                  }!`, {
+                // Update the notification badge count
+                setNotificationBadgeCount(prevCount => prevCount + newNotifications.length);
+
+                toast.info(`You have ${newNotifications.length === 1
+                        ? `${newNotifications.length} new notification`
+                        : `${newNotifications.length} new notifications`
+                    }!`, {
                     duration: 7500,
                 });
             }
         }
     }, [notifications, lastNotificationTimestamp])
 
-    return notifications ? (<Sheet>
+    return notifications ? (<Sheet onOpenChange={() => setNotificationBadgeCount(0)}>
         <SheetTrigger asChild>
-            <Bell className="h-7 w-7 cursor-pointer rounded-lg bg-background p-1.5 text-secondary border border-secondary" />
+            {notificationBadgeCount > 0 ? (
+                <div className="relative inline-block">
+                    <div className="absolute rounded-[50%] h-4 w-4 flex flex-col items-center justify-center bg-secondary text-secondary-foreground text-[10px] p-2.5 right-[-10px] top-[-10px]">
+                        {notificationBadgeCount > 9 ? "9+" : notificationBadgeCount}
+                    </div>
+                    <Bell className="h-7 w-7 cursor-pointer rounded-lg bg-background p-1.5 text-secondary border border-secondary" />
+                </div>
+            ) : (
+                <Bell className="h-7 w-7 cursor-pointer rounded-lg bg-background p-1.5 text-secondary border border-secondary" />
+            )}
         </SheetTrigger>
         <SheetContent
             side="right"

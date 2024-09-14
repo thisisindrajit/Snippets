@@ -1,17 +1,45 @@
 import { Button } from "@/components/ui/button";
-import { currentUser } from "@clerk/nextjs/server";
-import { ArrowLeft } from "lucide-react";
+import { api } from "@/convex/_generated/api";
+import { LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FC } from "react";
+import { fetchQuery } from "convex/nextjs";
+import { Id } from "@/convex/_generated/dataModel";
+import CSnippet from "@/components/common/CSnippet";
+import { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { snippetId: string };
+}): Promise<Metadata> {
+  const { snippetId } = params;
+
+  const snippet = await fetchQuery(api.snippets.getSnippetById, {
+    snippetId: snippetId as Id<"snippets">,
+  });
+
+  return {
+    title: snippet ? `Snippet about ${snippet.title}` : "No snippet found!",
+    description: snippet?.abstract ?? "No snippet found!",
+  };
+}
 
 const Snippet: FC<{
   params: { snippetId: string };
 }> = async ({ params }) => {
-  const user = await currentUser();
   const { snippetId } = params;
 
-  if (!snippetId || !user) {
+  if (!snippetId) {
+    redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/user/dashboard`);
+  }
+
+  const snippet = await fetchQuery(api.snippets.getSnippetById, {
+    snippetId: snippetId as Id<"snippets">,
+  });
+
+  if (!snippet) {
     redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/user/dashboard`);
   }
 
@@ -22,12 +50,31 @@ const Snippet: FC<{
           variant="outline"
           className="flex gap-2 items-center justify-center"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <LayoutDashboard className="h-4 w-4" />
           Go to trending snippets
         </Button>
-        <div>Snippet goes here...</div>
       </Link>
-      
+      <CSnippet
+        key={snippet._id}
+        snippetId={snippet._id}
+        title={snippet.title}
+        requestedBy={snippet.requested_by}
+        requestorName={snippet.requestor_name}
+        requestedOn={new Date(snippet._creationTime)}
+        what={snippet.data["what"]?.length > 0 ? snippet.data["what"] : []}
+        why={snippet.data["why"]?.length > 0 ? snippet.data["why"] : []}
+        when={snippet.data["when"]?.length > 0 ? snippet.data["when"] : []}
+        where={snippet.data["where"]?.length > 0 ? snippet.data["where"] : []}
+        how={snippet.data["how"]?.length > 0 ? snippet.data["how"] : []}
+        amazingFacts={
+          snippet.data["amazingfacts"]?.length > 0
+            ? snippet.data["amazingfacts"]
+            : []
+        }
+        references={snippet?.references ?? []}
+        tags={snippet?.tags ?? []}
+        likesCount={snippet.likes_count}
+      />
     </div>
   );
 };

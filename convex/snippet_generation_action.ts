@@ -3,23 +3,13 @@ import { action } from "./_generated/server";
 import Groq from "groq-sdk";
 import { api } from "./_generated/api";
 import {
+  createEmbeddingFromQuery,
   fetchHtmlContentAndVectorize,
   normalizeChunks,
   normalizeData,
   searchForSources,
 } from "../utilities/commonUtilities";
-
-type TSnippet = {
-  what: string;
-  why: string;
-  when: string;
-  where: string;
-  how: string;
-  amazingfacts?: string[];
-  abstract?: string;
-  abstract_embedding?: number[];
-  tags?: string[];
-};
+import { TSnippet } from "../types/TSnippet";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -189,6 +179,14 @@ export const generateSnippet = action({
       return false;
     }
 
+    // Get all required data from the generated snippet
+    const data = JSON.parse(generatedSnippet) as TSnippet;
+    const tags = data.tags;
+    const abstract = data.abstract;
+
+    // TODO: Create embedding of abstract
+    const abstract_embedding = abstract ? await createEmbeddingFromQuery(abstract) : undefined;
+
     const createdSnippetId = await ctx.runMutation(api.snippets.createSnippet, {
       title: searchQuery,
       likes_count: 0,
@@ -208,10 +206,10 @@ export const generateSnippet = action({
           snippetType: "5w1h",
         })
       )?._id, // For now, only generating 5W1H type snippets
-      data: JSON.parse(generatedSnippet) as TSnippet,
-      tags: (JSON.parse(generatedSnippet) as TSnippet)?.tags,
-      abstract: (JSON.parse(generatedSnippet) as TSnippet)?.abstract,
-      abstract_embedding: undefined,
+      data: data,
+      tags: tags,
+      abstract: abstract,
+      abstract_embedding: abstract_embedding,
       references: similarTextChunksAndReferences?.references ?? undefined,
     });
 

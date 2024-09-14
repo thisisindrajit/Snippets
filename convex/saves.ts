@@ -1,6 +1,58 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { paginationOptsValidator } from "convex/server";
+import { IPaginationResult } from "../interfaces/IPaginationResult";
+import { Doc } from "./_generated/dataModel";
+import { getSnippetById } from "./snippets";
 
+// Get saved snippets by user ID
+export const getSavedSnippetsByUserId = query({
+  args: {
+    userId: v.optional(v.id("users")),
+    paginationOpts: paginationOptsValidator,
+  },
+  handler: async (ctx, args) => {
+    const saveDetails = await ctx.db
+      .query("saves")
+      .filter((q) => q.eq(q.field("saved_by"), args.userId))
+      .order("desc")
+      .paginate(args.paginationOpts);
+
+    const savedSnippets = (await Promise.all(
+      saveDetails.page.map(async (saveDetail) => {
+        const snippet = await getSnippetById(ctx, {
+          snippetId: saveDetail.snippet_id,
+        });
+
+        return snippet ? { ...snippet, saved_at: saveDetail._creationTime } : null;
+      })
+    )).filter((snippet) => snippet !== null) as (Doc<"snippets"> & { saved_at: number })[];
+
+    const result: IPaginationResult<
+      Doc<"snippets"> & { saved_at: number }
+    > = {
+      page: savedSnippets,
+      isDone: saveDetails.isDone,
+      continueCursor: saveDetails.continueCursor,
+      splitCursor: saveDetails.splitCursor,
+      pageStatus: saveDetails.pageStatus,
+    };
+
+    return result;
+  },
+});
+
+export const getSnippets = query({
+  args: { paginationOpts: paginationOptsValidator },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("snippets")
+      .order("desc")
+      .paginate(args.paginationOpts);
+  },
+});
+
+// Get save details
 export const getSaveDetails = query({
   args: {
     snippetId: v.optional(v.id("snippets")),

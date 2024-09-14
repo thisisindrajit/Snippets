@@ -275,3 +275,11 @@ export function convertToPrettyDateFormatInLocalTimezone(
 
   return `${fullDate} at ${hours}:${minutes} ${amOrPm}`;
 }
+
+// Utility function to create an embedding from a query
+export async function createEmbeddingFromQuery(query: string): Promise<number[]> {
+  const embeddings = new FireworksEmbeddings();
+  const embedding = await embeddings.embedQuery(query);
+  
+  return embedding;
+}

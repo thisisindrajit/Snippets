@@ -1,3 +1,4 @@
+import CSavedSnippetsHolder from "@/components/common/CSavedSnippetsHolder";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -8,7 +9,7 @@ const Saved = async () => {
     redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/user/dashboard`);
   }
 
-  return <div>Saved snippets go here</div>;
+  return <CSavedSnippetsHolder />;
 };
 
 export default Saved;

@@ -62,7 +62,7 @@ const CSnippet: FC<ICSnippetProps> = ({
   likesCount,
   className,
   capitalizeTitle = true,
-  showLinkIcon = false,
+  showLinkIcon = true,
   showLikeSaveAndNotes = true,
 }) => {
   const { userId } = useAuth();
@@ -219,12 +219,12 @@ const CSnippet: FC<ICSnippetProps> = ({
             {title}
           </div>
           {showLinkIcon && (
-            <Link href={`/user/snippet/${snippetId}`}>
+            <Link href={`/snippet/${snippetId}`}>
               <CircleArrowRight className="h-5 w-5 stroke-primary" />
             </Link>
           )}
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-0.5 my-1">
           {savedOn && (
             <div className="text-xs/loose sm:text-sm/loose text-secondary">
               Saved{" "}
@@ -323,7 +323,7 @@ const CSnippet: FC<ICSnippetProps> = ({
           </ul>
         </div>
       )}
-      {showLikeSaveAndNotes && (
+      {userId && showLikeSaveAndNotes && (
         <div className="flex items-center w-fit gap-2 h-10 select-none">
           <div
             className="bg-red-50 flex items-center justify-center gap-1.5 text-sm w-fit text-red-600 p-2.5 sm:px-4 sm:py-3 h-full rounded-md cursor-pointer border border-red-600"
