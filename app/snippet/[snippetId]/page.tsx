@@ -73,6 +73,7 @@ const Snippet: FC<{
         }
         references={snippet?.references ?? []}
         tags={snippet?.tags ?? []}
+        showLinkIcon={false}
         likesCount={snippet.likes_count}
       />
     </div>

@@ -2,7 +2,7 @@
 
 In our rapidly changing digital age, the way we absorb information is shifting dramatically. Traditional learning methods often can't keep pace with the needs of today's learners, who crave quick, digestible content.Many young people find themselves spending hours on social media, often interacting with content that offers little to no educational value.
 
-I personally wanted to address this challenge, and so I created Snippets — a heartfelt, open-source and innovative ed-tech social media platform. Snippets harnesses the power of artificial intelligence to offer engaging, bite-sized learning experiences that are as enjoyable as they are educational. With its AI-generated snippets structured in the 5W1H framework, Snippets makes learning not just accessible, but a delightful journey of discovery.
+I personally wanted to address this challenge, and so I created Snippets — an innovative ed-tech social media platform. Snippets harnesses the power of artificial intelligence to offer engaging, bite-sized learning experiences that are as enjoyable as they are educational. With its AI-generated snippets structured in the 5W1H framework, Snippets makes learning not just accessible, but a delightful journey of discovery.
 
 <br>
 

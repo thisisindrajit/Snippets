@@ -1,6 +1,15 @@
 import CSnippetsHolder from "@/components/CSnippetsHolder";
+import { APP_NAME } from "@/constants/common";
 import { currentUser } from "@clerk/nextjs/server";
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
+
+export function metadata(): Metadata {
+  return {
+    title: `Dashboard - ${APP_NAME}`,
+    description: `The dashboard contains the trending snippets.`,
+  }
+}
 
 const Dashboard = async () => {
   const user = await currentUser();

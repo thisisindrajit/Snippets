@@ -2,7 +2,9 @@
 - [X] Develop logic for saved snippets and notes
     - [X] Saved snippets similar logic -> q.or(...deletedIds.map(id => q.eq(q.field("relation"), id))) [https://discord.com/channels/1019350475847499849/1124781236318109756]
     - [X] Notes
-- [X] Add full text search for notes
+- [ ] Add full text search for notes
+    - [X] Add search index in schema
+    - [ ] Add search box in notes and functionality
 - [ ] Add vector search to show similar snippets for a snippet
     - [X] Modify prompt to include abstract and add code to create embedding of abstract and store in DB
     - [ ] Create action to get similar snippets and show it
