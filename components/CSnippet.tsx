@@ -8,20 +8,21 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "../ui/carousel";
-import { Card, CardContent } from "../ui/card";
+} from "./ui/carousel";
+import { Card, CardContent } from "./ui/card";
 import Markdown from "react-markdown";
 import { convertToPrettyDateFormatInLocalTimezone } from "@/utilities/commonUtilities";
 import CReferenceHolder from "@/components/holders/CReferenceHolder";
 import { Bookmark, CircleArrowRight, Heart, Share } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import DialogHolder from "../holders/DialogHolder";
-import CShareDialogContentHolder from "../holders/CShareDialogHolder";
+import DialogHolder from "./holders/DialogHolder";
+import CShareDialogContentHolder from "./holders/CShareDialogHolder";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useAuth } from "@clerk/nextjs";
+import NotesDialogHolder from "./holders/NotesDialogHolder";
 
 interface ICSnippetProps {
   snippetId: Id<"snippets">;
@@ -188,6 +189,11 @@ const CSnippet: FC<ICSnippetProps> = ({
     });
   };
 
+  const noteDetails = useQuery(api.notes.getNoteDetails, {
+    snippetId: snippetId,
+    notedBy: userByExternalId?._id,
+  });
+
   useEffect(() => {
     if (!carouselApi) {
       return;
@@ -272,6 +278,13 @@ const CSnippet: FC<ICSnippetProps> = ({
           <div className="bg-background text-foreground border border-foreground p-2 rounded-md w-fit text-sm sm:text-base">
             {getCurrentSlideText(current)}
           </div>
+          {userId && showLikeSaveAndNotes && (
+            <NotesDialogHolder
+              snippetId={snippetId}
+              snippetTitle={title}
+              note={noteDetails?.note ?? ""}
+            />
+          )}
         </div>
         <Carousel setApi={setCarouselApi} opts={{ loop: true }}>
           <CarouselContent>

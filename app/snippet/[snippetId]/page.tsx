@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { FC } from "react";
 import { fetchQuery } from "convex/nextjs";
 import { Id } from "@/convex/_generated/dataModel";
-import CSnippet from "@/components/common/CSnippet";
+import CSnippet from "@/components/CSnippet";
 import { Metadata } from "next";
 
 export async function generateMetadata({

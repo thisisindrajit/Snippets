@@ -1,4 +1,4 @@
-import CSavedSnippetsHolder from "@/components/common/CSavedSnippetsHolder";
+import CSavedSnippetsHolder from "@/components/CSavedSnippetsHolder";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 

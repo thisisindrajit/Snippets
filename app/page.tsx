@@ -2,7 +2,7 @@ import TopBar from "@/components/TopBar";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
-import CSnippet from "@/components/common/CSnippet";
+import CSnippet from "@/components/CSnippet";
 import { SNIPPETS_SNIPPET_DETAILS } from "@/constants/common";
 
 const Home = async () => {

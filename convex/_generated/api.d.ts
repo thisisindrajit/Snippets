@@ -18,6 +18,7 @@ import type * as http from "../http.js";
 import type * as likes from "../likes.js";
 import type * as list_notification_types from "../list_notification_types.js";
 import type * as list_snippet_types from "../list_snippet_types.js";
+import type * as notes from "../notes.js";
 import type * as notifications from "../notifications.js";
 import type * as saves from "../saves.js";
 import type * as snippet_generation_action from "../snippet_generation_action.js";
@@ -37,6 +38,7 @@ declare const fullApi: ApiFromModules<{
   likes: typeof likes;
   list_notification_types: typeof list_notification_types;
   list_snippet_types: typeof list_snippet_types;
+  notes: typeof notes;
   notifications: typeof notifications;
   saves: typeof saves;
   snippet_generation_action: typeof snippet_generation_action;

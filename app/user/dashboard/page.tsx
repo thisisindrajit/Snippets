@@ -1,4 +1,4 @@
-import CSnippetsHolder from "@/components/common/CSnippetsHolder";
+import CSnippetsHolder from "@/components/CSnippetsHolder";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 

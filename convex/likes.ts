@@ -35,6 +35,7 @@ export const likeOrUnlikeSnippet = mutation({
 
     const currentSnippet = await ctx.db.get(args.snippetId);
 
+    // If the snippet is liked, insert a new like record, else delete the existing like record
     if (args.isLiked) {
       await Promise.all([
         ctx.db.insert("likes", {
@@ -42,7 +43,7 @@ export const likeOrUnlikeSnippet = mutation({
           liked_by: args.modifiedBy,
         }),
         currentSnippet &&
-          ctx.db.patch(args.snippetId, {
+          ctx.db.patch(currentSnippet._id, {
             likes_count: currentSnippet.likes_count + 1,
           }),
       ]);
@@ -57,7 +58,7 @@ export const likeOrUnlikeSnippet = mutation({
           likeDetails._id &&
           (await ctx.db.delete(likeDetails._id)),
         currentSnippet &&
-          ctx.db.patch(args.snippetId, {
+          ctx.db.patch(currentSnippet._id, {
             likes_count: currentSnippet.likes_count - 1,
           }),
       ]);

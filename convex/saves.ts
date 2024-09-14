@@ -18,19 +18,23 @@ export const getSavedSnippetsByUserId = query({
       .order("desc")
       .paginate(args.paginationOpts);
 
-    const savedSnippets = (await Promise.all(
-      saveDetails.page.map(async (saveDetail) => {
-        const snippet = await getSnippetById(ctx, {
-          snippetId: saveDetail.snippet_id,
-        });
+    const savedSnippets = (
+      await Promise.all(
+        saveDetails.page.map(async (saveDetail) => {
+          const snippet = await getSnippetById(ctx, {
+            snippetId: saveDetail.snippet_id,
+          });
 
-        return snippet ? { ...snippet, saved_at: saveDetail._creationTime } : null;
-      })
-    )).filter((snippet) => snippet !== null) as (Doc<"snippets"> & { saved_at: number })[];
+          return snippet
+            ? { ...snippet, saved_at: saveDetail._creationTime }
+            : null;
+        })
+      )
+    ).filter((snippet) => snippet !== null) as (Doc<"snippets"> & {
+      saved_at: number;
+    })[];
 
-    const result: IPaginationResult<
-      Doc<"snippets"> & { saved_at: number }
-    > = {
+    const result: IPaginationResult<Doc<"snippets"> & { saved_at: number }> = {
       page: savedSnippets,
       isDone: saveDetails.isDone,
       continueCursor: saveDetails.continueCursor,
@@ -39,16 +43,6 @@ export const getSavedSnippetsByUserId = query({
     };
 
     return result;
-  },
-});
-
-export const getSnippets = query({
-  args: { paginationOpts: paginationOptsValidator },
-  handler: async (ctx, args) => {
-    return await ctx.db
-      .query("snippets")
-      .order("desc")
-      .paginate(args.paginationOpts);
   },
 });
 
@@ -85,14 +79,12 @@ export const saveOrUnsaveSnippet = mutation({
       throw new Error("modifiedBy argument not provided!");
     }
 
+    // If the snippet is saved, insert a new save record, else delete the existing save record
     if (args.isSaved) {
-      const currentSnippet = await ctx.db.get(args.snippetId);
-
-      currentSnippet &&
-        (await ctx.db.insert("saves", {
-          snippet_id: args.snippetId,
-          saved_by: args.modifiedBy,
-        }));
+      await ctx.db.insert("saves", {
+        snippet_id: args.snippetId,
+        saved_by: args.modifiedBy,
+      });
     } else {
       const saveDetails = await getSaveDetails(ctx, {
         snippetId: args.snippetId,

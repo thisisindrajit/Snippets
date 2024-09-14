@@ -1,5 +1,5 @@
 import TopBar from "@/components/TopBar";
-import CSearchBar from "@/components/common/CSearchBar";
+import CSearchBar from "@/components/CSearchBar";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import SideBar from "@/components/common/Sidebar";
