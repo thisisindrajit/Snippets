@@ -40,7 +40,7 @@ const SimilarSnippetDetails: FC<{
       </div>
       <Link
         href={`/snippet/${snippetId}`}
-        className="bg-primary/10 flex items-center justify-center gap-1.5 text-sm w-full text-primary p-2 sm:px-3 sm:py-2 rounded-md border border-primary"
+        className="bg-primary/10 flex items-center justify-center gap-1.5 text-sm w-full lg:w-fit mx-auto mr-0 text-primary p-2 sm:px-3 sm:py-2 rounded-md border border-primary"
         target="_blank"
       >
         View
