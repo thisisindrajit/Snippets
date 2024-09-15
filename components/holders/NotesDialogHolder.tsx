@@ -17,9 +17,10 @@ const NotesDialogHolder: FC<{
         </div>
       }
       title={`Notes for ${snippetTitle}`}
-      className="h-[80%] sm:max-w-[75%] sm:max-h-[80%] overflow-auto flex flex-col justify-between gap-4 rounded-md"
+      className="h-[80%] sm:max-w-[75%] sm:max-h-[80%] flex flex-col justify-between gap-3"
+      noChildrenContainer
     >
-      <div>
+      <div className="text-sm/relaxed">
         Take notes for this snippet and refer them later. Make sure to save your
         notes 😁
       </div>

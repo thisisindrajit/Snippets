@@ -43,8 +43,8 @@ const CSimilarSnippetsHolder: FC<{
           <span className="md:hidden">Similar</span>
         </div>
       }
-      title={`Similar snippets like ${snippetTitle}`}
-      className="h-[80%] sm:max-w-[75%] sm:max-h-[80%] overflow-auto flex flex-col gap-4 rounded-md"
+      title={`Similar to ${snippetTitle}`}
+      className="h-[80%] sm:max-w-[85%] sm:max-h-[85%] flex flex-col gap-4"
     >
       {isLoading ? (
         <div className="h-full w-full flex items-center justify-center">
@@ -52,7 +52,7 @@ const CSimilarSnippetsHolder: FC<{
         </div>
       ) : (
         similarSnippets.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 overflow-auto sm:px-2">
             {similarSnippets.map((similarSnippet, index) => (
               <SimilarSnippetDetails
                 key={similarSnippet._id}

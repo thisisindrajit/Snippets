@@ -16,12 +16,14 @@ const DialogHolder: FC<{
   dialogTrigger: ReactNode;
   className?: string;
   title: string;
+  noChildrenContainer?: boolean;
   children: ReactNode;
 }> = ({
   triggerAsChild = true,
   dialogTrigger,
   className,
   title,
+  noChildrenContainer = false,
   children: dialogContent,
 }) => {
   return (
@@ -29,23 +31,31 @@ const DialogHolder: FC<{
       <DialogTrigger asChild={triggerAsChild}>{dialogTrigger}</DialogTrigger>
       <DialogContent
         className={cn(
-          "flex flex-col gap-4 w-[90%] p-4 rounded-md dark:border-neutral-700 pt-2 pb-4",
+          `flex flex-col gap-4 w-[90%] rounded-md dark:border-neutral-700 overflow-clip ${noChildrenContainer ? "px-4 pt-2 pb-4" : "p-0"}`,
           className
         )}
       >
         {/* Dialog title and close button holder */}
-        <DialogHeader className="flex flex-row items-center justify-between gap-8 w-full">
+        <DialogHeader className={`flex flex-row items-center justify-between gap-4 w-full ${!noChildrenContainer && "px-3 pt-2"}`}>
           <DialogTitle title={title} className="text-base truncate mt-1.5">
             {title}
           </DialogTitle>
           <DialogClose asChild>
-            <Button variant="destructive" size="icon" className="h-6 w-6">
+            <Button
+              variant="destructive"
+              size="icon"
+              className="h-6 min-w-[1.5rem] w-6"
+            >
               <X className="h-4 w-4 stroke-white" />
             </Button>
           </DialogClose>
         </DialogHeader>
         {/* Dialog content */}
-        {dialogContent}
+        {noChildrenContainer ? (
+          dialogContent
+        ) : (
+          <div className="overflow-auto px-3 pb-4">{dialogContent}</div>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -11,7 +11,7 @@ const SimilarSnippetDetails: FC<{
   tags: string[];
 }> = ({ snippetId, position, title, abstract, tags }) => {
   return (
-    <div className="border border-neutral-300 shadow-lg rounded-lg flex flex-col justify-between p-3 sm:p-4 gap-6">
+    <div className="border border-neutral-300 shadow-lg rounded-lg flex flex-col justify-between p-3 sm:p-4 gap-4 sm:gap-6">
       <div className="flex flex-col gap-3">
         <div
           className={`text-lg/loose sm:text-xl/relaxed font-medium underline decoration-dotted underline-offset-8 line-clamp-2 capitalize
@@ -36,11 +36,11 @@ const SimilarSnippetDetails: FC<{
               );
             })}
         </div>
-        <div className="text-justify leading-loose">{abstract}</div>
+        <div className="text-sm/loose sm:text-base/loose text-justify">{abstract}</div>
       </div>
       <Link
         href={`/snippet/${snippetId}`}
-        className="bg-primary/10 flex items-center justify-center gap-1.5 text-sm w-fit text-primary p-2.5 sm:px-3 sm:py-2.5 rounded-md border border-primary mx-auto mr-0"
+        className="bg-primary/10 flex items-center justify-center gap-1.5 text-sm w-full text-primary p-2 sm:px-3 sm:py-2 rounded-md border border-primary"
         target="_blank"
       >
         View
