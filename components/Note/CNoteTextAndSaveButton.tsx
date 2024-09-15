@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, Fragment, useState } from "react";
+import { FC, Fragment, KeyboardEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -21,6 +21,13 @@ const CNoteTextAndSaveButton: FC<{
   const userByExternalId = useQuery(api.users.getUserByExternalId, {
     externalId: userId ?? undefined,
   });
+
+  const handleKeyDown = async (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    // Run if shift + enter is pressed
+    if (e.key === "Enter" && e.shiftKey) {
+      await handleSaveNote();
+    }
+  };
 
   const noteMutation = useMutation(api.notes.upsertNote).withOptimisticUpdate(
     (localStore, args) => {
@@ -66,7 +73,7 @@ const CNoteTextAndSaveButton: FC<{
     try {
       await handleNote(updatedNoteTrimmed);
       toast.success(`Note saved successfully! 📝`);
-      
+
       setPrevNote(updatedNoteTrimmed);
     } catch (error) {
       toast.error("Failed to save note! 😢");
@@ -84,13 +91,21 @@ const CNoteTextAndSaveButton: FC<{
           setCurrentNote(e.target.value);
         }}
         className="h-full text-sm md:text-base resize-none leading-relaxed"
+        onKeyDown={(e) => handleKeyDown(e)}
       />
       <Button
         disabled={isSavingNote}
         onClick={isSavingNote ? () => {} : handleSaveNote}
         className="w-full sm:w-fit self-end"
       >
-        {isSavingNote ? "Saving note..." : "Save note"}
+        {isSavingNote ? (
+          "Saving note..."
+        ) : (
+          <Fragment>
+            <span className="block md:hidden">Save note</span>
+            <span className="hidden md:block">Save note (Shift + Enter)</span>
+          </Fragment>
+        )}
       </Button>
     </Fragment>
   );

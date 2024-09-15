@@ -17,12 +17,16 @@ const CNotesHolder = () => {
   };
 
   useEffect(() => {
-    // debounce the set state
-    const timeout = setTimeout(() => {
-      setIsOnlySearchResults(searchQuery.length > 0);
-    }, 1000);
+    if (searchQuery.length === 0) {
+      setIsOnlySearchResults(false);
+    } else {
+      // debounce the set state
+      const timeout = setTimeout(() => {
+        setIsOnlySearchResults(searchQuery.length > 0);
+      }, 1000);
 
-    return () => clearTimeout(timeout);
+      return () => clearTimeout(timeout);
+    }
   }, [searchQuery]);
 
   return (

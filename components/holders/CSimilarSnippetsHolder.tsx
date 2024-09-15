@@ -55,7 +55,7 @@ const CSimilarSnippetsHolder: FC<{
       className="h-[80%] sm:max-w-[85%] sm:max-h-[85%] flex flex-col gap-4"
     >
       {isLoading ? (
-        <div className="h-full w-full flex items-center justify-center">
+        <div className="h-full w-full flex items-center justify-center pb-20">
           Loading similar snippets ✨
         </div>
       ) : similarSnippets.length > 0 ? (
@@ -72,7 +72,7 @@ const CSimilarSnippetsHolder: FC<{
           ))}
         </div>
       ) : (
-        <div className="h-full w-full flex items-center justify-center">
+        <div className="h-full w-full flex items-center justify-center pb-20">
           No similar snippets found 😭
         </div>
       )}

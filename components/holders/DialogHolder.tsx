@@ -54,7 +54,7 @@ const DialogHolder: FC<{
         {noChildrenContainer ? (
           dialogContent
         ) : (
-          <div className="overflow-auto px-3 pb-4">{dialogContent}</div>
+          <div className="overflow-auto px-3 pb-4 h-full">{dialogContent}</div>
         )}
       </DialogContent>
     </Dialog>

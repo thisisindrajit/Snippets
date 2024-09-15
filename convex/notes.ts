@@ -13,7 +13,7 @@ export const getNotesByUserId = query({
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
-    // console.log("Calling func"); // Testing if debounce is working
+    console.log("Calling search for notes func"); // Testing if debounce is working
     
     let noteDetails: IPaginationResult<Doc<"notes">>;
 

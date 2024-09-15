@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { ConvexClientProvider } from "./ConvexClientProvider";
-
-import "./globals.css";
 import { APP_DESCRIPTION, APP_NAME } from "@/constants/common";
 import { Toaster } from "@/components/ui/sonner";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: APP_NAME,
@@ -70,6 +72,8 @@ export default function RootLayout({
             {children}
           </div>
         </ConvexClientProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
