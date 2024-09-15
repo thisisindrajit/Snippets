@@ -10,9 +10,6 @@ import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { retryFunction } from "@/utilities/commonUtilities";
 
-// const CSearchBar: FC<{
-//   searchHandler: (searchQuery: string, userId?: string | null) => Promise<void>;
-// }> = ({ searchHandler }) => {
 const CSearchBar: FC = () => {
   const { userId } = useAuth();
   const generateSnippetAction = useAction(
@@ -61,7 +58,6 @@ const CSearchBar: FC = () => {
     );
 
     try {
-      // await searchHandler(formattedSearchQuery, userId);
       const isSuccess = await retryFunction(() =>
         generateSnippetAction({
           searchQuery: searchQuery,

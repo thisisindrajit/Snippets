@@ -26,8 +26,8 @@ const TopBar: FC = async () => {
       {/* User menu button (if signed in) or SignIn button (if signed out) */}
       <SignedIn>
         <div className="flex items-center justify-center gap-2.5">
-          <div className="flex gap-1.5 items-center justify-center text-sm text-amber-500 bg-background py-1 px-2 rounded-lg border border-amber-500 cursor-pointer h-7">
-            <Trophy className="h-4 w-4" />0 XP
+          <div className="flex gap-1.5 items-center justify-center text-sm text-amber-500 bg-background py-1 px-2 rounded-lg border border-amber-500 h-7">
+            <Trophy className="h-4 w-4" />Soon!
           </div>
           <CNotificationHolder />
           <UserButton

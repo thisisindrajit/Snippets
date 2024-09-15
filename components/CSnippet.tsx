@@ -13,7 +13,7 @@ import { Card, CardContent } from "./ui/card";
 import Markdown from "react-markdown";
 import { convertToPrettyDateFormatInLocalTimezone } from "@/utilities/commonUtilities";
 import CReferenceHolder from "@/components/holders/CReferenceHolder";
-import { Bookmark, CircleArrowRight, Heart, Share } from "lucide-react";
+import { ArrowRight, Bookmark, Heart, Share } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import DialogHolder from "./holders/DialogHolder";
@@ -23,6 +23,7 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useAuth } from "@clerk/nextjs";
 import NotesDialogHolder from "./holders/NotesDialogHolder";
+import CSimilarSnippetsHolder from "./holders/CSimilarSnippetsHolder";
 
 interface ICSnippetProps {
   snippetId: Id<"snippets">;
@@ -190,7 +191,7 @@ const CSnippet: FC<ICSnippetProps> = ({
   };
 
   const noteDetails = useQuery(api.notes.getNoteDetails, {
-    snippetId: snippetId,
+    snippetId: userId ? snippetId : undefined,
     notedBy: userByExternalId?._id,
   });
 
@@ -215,22 +216,19 @@ const CSnippet: FC<ICSnippetProps> = ({
       )}
     >
       {/* Title, type, request details and tags */}
-      <div className="flex flex-col gap-1.5">
-        <div className="flex gap-2 items-center justify-center w-fit">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between gap-6">
           <div
-            className={`text-lg/relaxed sm:text-xl/relaxed font-medium underline decoration-dotted underline-offset-8 ${
+            className={`text-lg/loose sm:text-xl/relaxed font-medium underline decoration-dotted underline-offset-8 line-clamp-2 ${
               capitalizeTitle ? "capitalize" : "normal-case"
             }`}
+            title={title}
           >
             {title}
           </div>
-          {showLinkIcon && (
-            <Link href={`/snippet/${snippetId}`}>
-              <CircleArrowRight className="h-5 w-5 stroke-primary" />
-            </Link>
-          )}
+          {userId && <CSimilarSnippetsHolder snippetId={snippetId} snippetTitle={title} />}
         </div>
-        <div className="flex flex-col gap-0.5 my-1">
+        <div className="flex flex-col">
           {savedOn && (
             <div className="text-xs/loose sm:text-sm/loose text-secondary">
               Saved{" "}
@@ -337,7 +335,7 @@ const CSnippet: FC<ICSnippetProps> = ({
         </div>
       )}
       {userId && showLikeSaveAndNotes && (
-        <div className="flex items-center w-fit gap-2 h-10 select-none">
+        <div className="flex items-center w-full gap-2 h-10 select-none">
           <div
             className="bg-red-50 flex items-center justify-center gap-1.5 text-sm w-fit text-red-600 p-2.5 sm:px-4 sm:py-3 h-full rounded-md cursor-pointer border border-red-600"
             onClick={handleLike}
@@ -378,6 +376,15 @@ const CSnippet: FC<ICSnippetProps> = ({
               link={`${process.env.NEXT_PUBLIC_BASE_URL}/snippet/${snippetId}`}
             />
           </DialogHolder>
+          {showLinkIcon && (
+            <Link
+              href={`/snippet/${snippetId}`}
+              className="bg-primary/10 flex items-center justify-center gap-1.5 text-sm w-fit text-primary p-2.5 sm:px-3 sm:py-2.5 h-full rounded-md border border-primary mx-auto mr-0"
+            >
+              <span className="hidden sm:block">View</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
         </div>
       )}
     </div>

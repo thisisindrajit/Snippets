@@ -4,14 +4,22 @@ import { Fragment, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { api } from "@/convex/_generated/api";
 import { useStablePaginatedQuery } from "@/hooks/useStablePaginatedQuery";
-import CSnippet from "./CSnippet";
-import { Authenticated, AuthLoading } from "convex/react";
+import CSnippet from "../CSnippet";
+import { Authenticated, AuthLoading, useQuery } from "convex/react";
+import { useAuth } from "@clerk/nextjs";
 
-const CSnippetsHolder = () => {
+const CSavedSnippetsHolder = () => {
   const { ref, inView } = useInView();
+  const { userId } = useAuth();
+  const userByExternalId = useQuery(api.users.getUserByExternalId, {
+    externalId: userId ?? undefined,
+  });
+
   const { results, status, loadMore } = useStablePaginatedQuery(
-    api.snippets.getSnippets,
-    {},
+    api.saves.getSavedSnippetsByUserId,
+    {
+      userId: userByExternalId?._id,
+    },
     {
       initialNumItems: parseInt(
         process.env.NEXT_PUBLIC_NO_OF_RECORDS_TO_TAKE ?? "10"
@@ -29,19 +37,19 @@ const CSnippetsHolder = () => {
     <Fragment>
       <AuthLoading>
         <div className="w-full text-center my-2">
-          Loading trending snippets ✨
+          Loading saved snippets 🔖
         </div>
       </AuthLoading>
       <Authenticated>
         {status === "LoadingFirstPage" ? (
           <div className="w-full text-center my-2">
-            Loading trending snippets ✨
+            Loading saved snippets 🔖
           </div>
         ) : (
           <div className="flex flex-col gap-6">
             {results.length === 0 ? (
               <div className="w-full text-center my-2">
-                No snippets to show 😭
+                No saved snippets! 😭
               </div>
             ) : (
               <Fragment>
@@ -51,6 +59,7 @@ const CSnippetsHolder = () => {
                       key={snippet._id}
                       snippetId={snippet._id}
                       title={snippet.title}
+                      savedOn={new Date(snippet.saved_at)}
                       requestedBy={snippet.requested_by}
                       requestorName={snippet.requestor_name}
                       requestedOn={new Date(snippet._creationTime)}
@@ -97,7 +106,7 @@ const CSnippetsHolder = () => {
                 ? `Loading more snippets ✨`
                 : results.length > 0 &&
                   status === "Exhausted" &&
-                  "All snippets viewed! 🎉"}
+                  "All saved snippets viewed! 🎉"}
             </div>
           </div>
         )}
@@ -106,4 +115,4 @@ const CSnippetsHolder = () => {
   );
 };
 
-export default CSnippetsHolder;
+export default CSavedSnippetsHolder;

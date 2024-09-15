@@ -6,7 +6,7 @@ import { api } from "@/convex/_generated/api";
 import { useStablePaginatedQuery } from "@/hooks/useStablePaginatedQuery";
 import { Authenticated, AuthLoading, useQuery } from "convex/react";
 import { useAuth } from "@clerk/nextjs";
-import Note from "./Note";
+import Note from "../Note";
 
 const CNotesHolder = () => {
   const { ref, inView } = useInView();

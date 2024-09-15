@@ -1,6 +1,7 @@
 import { internalMutation, query, QueryCtx } from "./_generated/server";
 import { UserJSON } from "@clerk/backend";
 import { v, Validator } from "convex/values";
+import { internal } from "./_generated/api";
 
 export const getUserByExternalId = query({
   args: {
@@ -37,6 +38,10 @@ export const upsertFromClerk = internalMutation({
     const user = await userByExternalId(ctx, data.id);
     if (user === null) {
       await ctx.db.insert("users", userAttributes);
+      await ctx.scheduler.runAfter(0, internal.email.sendWelcomeEmail, {
+        firstName: userAttributes.firstName ?? undefined,
+        email: userAttributes.primaryEmail,
+      })
     } else {
       userAttributes.totalRewards = user.totalRewards;
       await ctx.db.patch(user._id, userAttributes);

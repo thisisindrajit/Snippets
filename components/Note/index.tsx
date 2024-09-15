@@ -19,7 +19,7 @@ const Note: FC<{
           <div className="text-lg/relaxed sm:text-xl/relaxed font-medium underline decoration-dotted underline-offset-8">
             {title}
           </div>
-          <Link href={`/user/snippet/${snippetId}`}>
+          <Link href={`/snippet/${snippetId}`}>
             <CircleArrowRight className="h-5 w-5 stroke-primary" />
           </Link>
         </div>

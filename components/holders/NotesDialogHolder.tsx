@@ -5,7 +5,7 @@ import DialogHolder from "./DialogHolder";
 import { Id } from "@/convex/_generated/dataModel";
 
 const NotesDialogHolder: FC<{
-  snippetId: string;
+  snippetId: Id<"snippets">;
   snippetTitle: string;
   note: string;
 }> = ({ snippetId, snippetTitle, note }) => {
@@ -23,7 +23,7 @@ const NotesDialogHolder: FC<{
         Take notes for this snippet and refer them later. Make sure to save your
         notes 😁
       </div>
-      <CNoteTextAndSaveButton note={note} snippetId={snippetId as Id<"snippets">} />
+      <CNoteTextAndSaveButton note={note} snippetId={snippetId} />
     </DialogHolder>
   );
 };

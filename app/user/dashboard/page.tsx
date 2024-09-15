@@ -1,4 +1,4 @@
-import CSnippetsHolder from "@/components/CSnippetsHolder";
+import CSnippetsHolder from "@/components/holders/CSnippetsHolder";
 import { APP_NAME } from "@/constants/common";
 import { currentUser } from "@clerk/nextjs/server";
 import { Metadata } from "next";

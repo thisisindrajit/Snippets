@@ -1,4 +1,4 @@
-import CNotesHolder from "@/components/CNotesHolder";
+import CNotesHolder from "@/components/holders/CNotesHolder";
 import { APP_NAME } from "@/constants/common";
 import { currentUser } from "@clerk/nextjs/server";
 import { Metadata } from "next";

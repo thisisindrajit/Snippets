@@ -184,7 +184,7 @@ export const generateSnippet = action({
     const tags = data.tags;
     const abstract = data.abstract;
 
-    // TODO: Create embedding of abstract
+    // Create embedding of abstract
     const abstract_embedding = abstract ? await createEmbeddingFromQuery(abstract) : undefined;
 
     const createdSnippetId = await ctx.runMutation(api.snippets.createSnippet, {
@@ -214,7 +214,7 @@ export const generateSnippet = action({
     });
 
     await ctx.runMutation(api.notifications.createNotification, {
-      notification: `${searchQuery}|user/snippet/${createdSnippetId}`,
+      notification: `${searchQuery}|snippet/${createdSnippetId}`,
       notification_creator: undefined,
       notification_receiver: (
         await ctx.runQuery(api.users.getUserByExternalId, {

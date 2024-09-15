@@ -14,6 +14,8 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as email from "../email.js";
+import type * as find_similar_snippets_action from "../find_similar_snippets_action.js";
 import type * as http from "../http.js";
 import type * as likes from "../likes.js";
 import type * as list_notification_types from "../list_notification_types.js";
@@ -34,6 +36,8 @@ import type * as users from "../users.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  email: typeof email;
+  find_similar_snippets_action: typeof find_similar_snippets_action;
   http: typeof http;
   likes: typeof likes;
   list_notification_types: typeof list_notification_types;

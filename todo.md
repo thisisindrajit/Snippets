@@ -5,9 +5,11 @@
 - [ ] Add full text search for notes
     - [X] Add search index in schema
     - [ ] Add search box in notes and functionality
-- [ ] Add vector search to show similar snippets for a snippet
+- [X] Add vector search to show similar snippets for a snippet
     - [X] Modify prompt to include abstract and add code to create embedding of abstract and store in DB
-    - [ ] Create action to get similar snippets and show it
+    - [X] Create action to get similar snippets and show it
 - [ ] Create scheduler to send email once user is signed up
-- [ ] Remove reward related code and tables
+- [X] Remove reward related code and tables
     - [ ] Create leaderboard page if possible
+- [ ] Add vercel analytics and speed insights
+- [ ] Add sound while notification comes
