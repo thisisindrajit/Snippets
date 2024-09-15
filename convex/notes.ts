@@ -2,21 +2,38 @@ import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
 import { getSnippetById } from "./snippets";
-import { Doc } from "./_generated/dataModel";
+import { Doc, Id } from "./_generated/dataModel";
 import { IPaginationResult } from "../interfaces/IPaginationResult";
 
 // Get notes by user ID
 export const getNotesByUserId = query({
   args: {
+    searchQuery: v.optional(v.string()),
     userId: v.optional(v.id("users")),
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
-    const noteDetails = await ctx.db
-      .query("notes")
-      .filter((q) => q.eq(q.field("noted_by"), args.userId))
-      .order("desc")
-      .paginate(args.paginationOpts);
+    // console.log("Calling func"); // Testing if debounce is working
+    
+    let noteDetails: IPaginationResult<Doc<"notes">>;
+
+    if (args.searchQuery && args.userId) {
+      noteDetails = await ctx.db
+        .query("notes")
+        .withSearchIndex("searchNote", (q) =>
+          q
+            .search("note", args.searchQuery as string)
+            .eq("noted_by", args.userId as Id<"users">)
+        )
+        .filter((q) => q.eq(q.field("noted_by"), args.userId))
+        .paginate(args.paginationOpts);
+    } else {
+      noteDetails = await ctx.db
+        .query("notes")
+        .filter((q) => q.eq(q.field("noted_by"), args.userId))
+        .order("desc")
+        .paginate(args.paginationOpts);
+    }
 
     const snippetsForWhichNotesHaveBeenAdded = (
       await Promise.all(

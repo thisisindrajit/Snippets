@@ -1,73 +1,51 @@
 "use client";
 
-import { Fragment, useEffect } from "react";
-import { useInView } from "react-intersection-observer";
-import { api } from "@/convex/_generated/api";
-import { useStablePaginatedQuery } from "@/hooks/useStablePaginatedQuery";
-import { Authenticated, AuthLoading, useQuery } from "convex/react";
-import { useAuth } from "@clerk/nextjs";
-import Note from "../Note";
+import { ChangeEvent, Fragment, useEffect, useState } from "react";
+import { Authenticated, AuthLoading } from "convex/react";
+import { Input } from "../ui/input";
+import CAllNotes from "../CAllNotes";
+import CSearchedNotes from "../CSearchedNotes";
 
 const CNotesHolder = () => {
-  const { ref, inView } = useInView();
-  const { userId } = useAuth();
-  const userByExternalId = useQuery(api.users.getUserByExternalId, {
-    externalId: userId ?? undefined,
-  });
+  const [notesCount, setNotesCount] = useState<number | null>(null);
+  const [isOnlySearchResults, setIsOnlySearchResults] =
+    useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const { results, status, loadMore } = useStablePaginatedQuery(
-    api.notes.getNotesByUserId,
-    {
-      userId: userByExternalId?._id,
-    },
-    {
-      initialNumItems: parseInt(
-        process.env.NEXT_PUBLIC_NO_OF_RECORDS_TO_TAKE ?? "10"
-      ),
-    }
-  );
+  const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   useEffect(() => {
-    if (inView) {
-      loadMore(parseInt(process.env.NEXT_PUBLIC_NO_OF_RECORDS_TO_TAKE ?? "10"));
-    }
-  }, [loadMore, inView]);
+    // debounce the set state
+    const timeout = setTimeout(() => {
+      setIsOnlySearchResults(searchQuery.length > 0);
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [searchQuery]);
 
   return (
     <Fragment>
       <AuthLoading>
-        <div className="w-full text-center my-2">Loading notes 📝</div>
+        <div className="w-full text-center my-2">
+          Checking if you are authenticated 🧐
+        </div>
       </AuthLoading>
       <Authenticated>
-        {status === "LoadingFirstPage" ? (
-          <div className="w-full text-center my-2">Loading notes 📝</div>
+        {notesCount && notesCount > 0 ? (
+          <Input
+            type="text"
+            placeholder="Search through your notes..."
+            value={searchQuery}
+            onChange={(e) => changeHandler(e)}
+            className="focus-visible:ring-primary focus-visible:outline-none border border-primary"
+          />
+        ) : null}
+        {isOnlySearchResults ? (
+          <CSearchedNotes searchQuery={searchQuery} />
         ) : (
-          <div className="flex flex-col gap-6">
-            {results.length === 0 ? (
-              <div className="w-full text-center my-2">No notes! 😭</div>
-            ) : (
-              <Fragment>
-                {results.map((snippetNote) => {
-                  return (
-                    <Note
-                      key={snippetNote._id}
-                      snippetId={snippetNote._id}
-                      note={snippetNote.note}
-                      title={snippetNote.title}
-                      lastNotedOn={new Date(snippetNote.noted_at)}
-                    />
-                  );
-                })}
-              </Fragment>
-            )}
-            <div ref={ref} className="w-full text-center my-2">
-              {status === "CanLoadMore" || status === "LoadingMore"
-                ? `Loading more notes ✨`
-                : results.length > 0 &&
-                  status === "Exhausted" &&
-                  "All notes viewed! 🎉"}
-            </div>
-          </div>
+          <CAllNotes setNotesCount={setNotesCount} />
         )}
       </Authenticated>
     </Fragment>

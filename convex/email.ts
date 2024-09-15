@@ -15,7 +15,7 @@ export const sendWelcomeEmail = internalAction({
     }
 
     const { data, error } = await resend.emails.send({
-      from: "hello@exploresnippets.today",
+      from: "Snippets <hello@exploresnippets.today>",
       to: [email],
       subject: firstName
         ? `Welcome to Snippets, ${firstName}!`

@@ -29,7 +29,7 @@ const CSnippetsHolder = () => {
     <Fragment>
       <AuthLoading>
         <div className="w-full text-center my-2">
-          Loading trending snippets ✨
+          Checking if you are authenticated 🧐
         </div>
       </AuthLoading>
       <Authenticated>

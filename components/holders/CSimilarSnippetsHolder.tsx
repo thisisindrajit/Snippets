@@ -21,13 +21,21 @@ const CSimilarSnippetsHolder: FC<{
 
   useEffect(() => {
     const getSimilarSnippets = async () => {
-      const similarSnippets = await retryFunction(() =>
-        findSimilarSnippetsAction({
-          snippetId: snippetId,
-        })
-      );
+      let similarSnippets = [];
+      try {
+        similarSnippets = await retryFunction(() =>
+          findSimilarSnippetsAction({
+            snippetId: snippetId,
+          })
+        );
 
-      setSimilarSnippets(similarSnippets);
+        setSimilarSnippets(similarSnippets);
+      } catch (error) {
+        console.error(
+          `Error while fetching similar snippets for snippet ${snippetId}`,
+          error
+        );
+      }
       setIsLoading(false);
     };
 
@@ -50,21 +58,23 @@ const CSimilarSnippetsHolder: FC<{
         <div className="h-full w-full flex items-center justify-center">
           Loading similar snippets ✨
         </div>
+      ) : similarSnippets.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 overflow-auto sm:px-2">
+          {similarSnippets.map((similarSnippet, index) => (
+            <SimilarSnippetDetails
+              key={similarSnippet._id}
+              position={index + 1}
+              snippetId={similarSnippet._id}
+              title={similarSnippet.title}
+              abstract={similarSnippet.abstract}
+              tags={similarSnippet.tags}
+            />
+          ))}
+        </div>
       ) : (
-        similarSnippets.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 overflow-auto sm:px-2">
-            {similarSnippets.map((similarSnippet, index) => (
-              <SimilarSnippetDetails
-                key={similarSnippet._id}
-                position={index + 1}
-                snippetId={similarSnippet._id}
-                title={similarSnippet.title}
-                abstract={similarSnippet.abstract}
-                tags={similarSnippet.tags}
-              />
-            ))}
-          </div>
-        )
+        <div className="h-full w-full flex items-center justify-center">
+          No similar snippets found 😭
+        </div>
       )}
     </DialogHolder>
   );

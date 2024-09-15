@@ -37,7 +37,7 @@ const CSavedSnippetsHolder = () => {
     <Fragment>
       <AuthLoading>
         <div className="w-full text-center my-2">
-          Loading saved snippets 🔖
+          Checking if you are authenticated 🧐
         </div>
       </AuthLoading>
       <Authenticated>
