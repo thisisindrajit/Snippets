@@ -211,7 +211,7 @@ const CSnippet: FC<ICSnippetProps> = ({
   return (
     <div
       className={cn(
-        "border border-neutral-300 shadow-lg text-accent-foreground min-h-[24rem] h-fit rounded-lg flex flex-col p-3 sm:p-4 gap-6 lg:gap-8",
+        "border border-neutral-300 shadow-xl text-accent-foreground min-h-[24rem] h-fit rounded-lg flex flex-col p-3 sm:p-4 gap-6 lg:gap-8",
         className
       )}
     >
@@ -226,7 +226,12 @@ const CSnippet: FC<ICSnippetProps> = ({
           >
             {title}
           </div>
-          {userId && <CSimilarSnippetsHolder snippetId={snippetId} snippetTitle={title} />}
+          {userId && (
+            <CSimilarSnippetsHolder
+              snippetId={snippetId}
+              snippetTitle={title}
+            />
+          )}
         </div>
         <div className="flex flex-col">
           {savedOn && (
@@ -379,9 +384,10 @@ const CSnippet: FC<ICSnippetProps> = ({
           {showLinkIcon && (
             <Link
               href={`/snippet/${snippetId}`}
-              className="bg-primary/10 flex items-center justify-center gap-1.5 text-sm w-fit text-primary p-2.5 sm:px-3 sm:py-2.5 h-full rounded-md border border-primary mx-auto mr-0"
+              className="bg-primary/10 flex items-center justify-center gap-1.5 text-sm h-full w-fit mx-auto mr-0 text-primary p-2 sm:px-3 sm:py-2 rounded-md border border-primary aspect-square xs:aspect-auto"
+              target="_blank"
             >
-              <span className="hidden sm:block">View</span>
+              <span className="hidden xs:block">View</span>
               <ArrowRight className="h-4 w-4" />
             </Link>
           )}

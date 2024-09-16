@@ -12,7 +12,7 @@ const Note: FC<{
   title: string;
 }> = ({ note, lastNotedOn, snippetId, title }) => {
   return (
-    <div className="border border-neutral-300 shadow-lg rounded-lg flex flex-col p-3 sm:p-4 gap-4 min-h-[24rem]">
+    <div className="border border-neutral-300 shadow-xl rounded-lg flex flex-col p-3 sm:p-4 gap-4 min-h-[24rem]">
       {/* Title, type and request details */}
       <div className="flex flex-col gap-3">
         <div className="flex gap-2 items-center justify-center w-fit">

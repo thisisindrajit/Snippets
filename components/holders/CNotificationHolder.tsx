@@ -87,7 +87,7 @@ const CNotificationHolder: FC = () => {
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="w-[95%] sm:w-[24rem] px-2 sm:px-4 max-h-screen overflow-auto z-[100]"
+        className="w-[85%] sm:w-[24rem] px-2 sm:px-4 max-h-screen overflow-auto z-[100]"
       >
         <SheetHeader>
           <SheetTitle>Latest notifications</SheetTitle>

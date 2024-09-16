@@ -22,7 +22,11 @@ const NotesDialogHolder: FC<{
     >
       <div className="text-sm/relaxed">
         Take notes for this snippet and refer them later. Make sure to save your
-        notes 😁
+        notes{" "}
+        <span className="hidden md:inline">
+          by pressing <span className="font-medium italic">Shift + enter</span>
+        </span>{" "}
+        😁
       </div>
       <CNoteTextAndSaveButton note={note} snippetId={snippetId} />
     </DialogHolder>

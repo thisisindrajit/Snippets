@@ -45,7 +45,7 @@ const CSimilarSnippetsHolder: FC<{
   return (
     <DialogHolder
       dialogTrigger={
-        <div className="flex items-center gap-1 justify-center bg-secondary/5 border border-secondary text-secondary py-1 px-2 sm:py-1.5 text-sm rounded-md cursor-pointer">
+        <div className="flex items-center gap-1 justify-center bg-secondary/5 border border-secondary text-secondary py-1 px-2 sm:py-1.5 text-sm rounded-md cursor-pointer mt-0.5">
           <Shapes className="h-4 w-4" />
           <span className="hidden md:block">Show similar</span>
           <span className="md:hidden">Similar</span>
