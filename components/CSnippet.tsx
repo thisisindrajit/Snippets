@@ -211,7 +211,7 @@ const CSnippet: FC<ICSnippetProps> = ({
   return (
     <div
       className={cn(
-        "border border-neutral-300 shadow-xl text-accent-foreground min-h-[24rem] h-fit rounded-lg flex flex-col p-3 sm:p-4 gap-6 lg:gap-8",
+        "border border-primary shadow-xl text-accent-foreground min-h-[24rem] h-fit rounded-lg flex flex-col p-3 sm:p-4 gap-6 lg:gap-8",
         className
       )}
     >

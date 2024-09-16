@@ -116,7 +116,7 @@ const Home = async () => {
                 references={snippet?.references ?? []}
                 tags={snippet?.tags ?? []}
                 likesCount={snippet.likes_count}
-                className="break-inside-avoid-column mb-4 border-primary"
+                className="break-inside-avoid-column mb-4"
               />
             ))}
           </div>
