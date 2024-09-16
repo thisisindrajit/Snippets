@@ -5,6 +5,7 @@ import { Authenticated, AuthLoading } from "convex/react";
 import { Input } from "../ui/input";
 import CAllNotes from "../CAllNotes";
 import CSearchedNotes from "../CSearchedNotes";
+import { Info } from "lucide-react";
 
 const CNotesHolder = () => {
   const [notesCount, setNotesCount] = useState<number | null>(null);
@@ -38,13 +39,19 @@ const CNotesHolder = () => {
       </AuthLoading>
       <Authenticated>
         {notesCount && notesCount > 0 ? (
-          <Input
-            type="text"
-            placeholder="Search through your notes..."
-            value={searchQuery}
-            onChange={(e) => changeHandler(e)}
-            className="focus-visible:ring-primary focus-visible:outline-none border border-primary"
-          />
+          <div className="flex flex-col gap-2">
+            <Input
+              type="text"
+              placeholder="Search through your notes..."
+              value={searchQuery}
+              onChange={(e) => changeHandler(e)}
+              className="focus-visible:ring-primary focus-visible:outline-none border border-primary text-base"
+            />
+            <div className="flex gap-1 items-center text-neutral-500 text-sm">
+              <Info className="h-4 w-4" />
+              Clear any search query to view all notes
+            </div>
+          </div>
         ) : null}
         {isOnlySearchResults ? (
           <CSearchedNotes searchQuery={searchQuery} />

@@ -8,11 +8,14 @@ import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 const CNoteTextAndSaveButton: FC<{
   note: string;
   snippetId: Id<"snippets">;
-}> = ({ note, snippetId }) => {
+  viewSnippetButton?: boolean;
+}> = ({ note, snippetId, viewSnippetButton = false }) => {
   const { userId } = useAuth();
   const [prevNote, setPrevNote] = useState(note);
   const [currentNote, setCurrentNote] = useState(note);
@@ -90,23 +93,35 @@ const CNoteTextAndSaveButton: FC<{
         onChange={(e) => {
           setCurrentNote(e.target.value);
         }}
-        className="h-full text-sm md:text-base resize-none leading-relaxed"
+        className="h-full resize-none text-base/loose"
         onKeyDown={(e) => handleKeyDown(e)}
       />
-      <Button
-        disabled={isSavingNote}
-        onClick={isSavingNote ? () => {} : handleSaveNote}
-        className="w-full sm:w-fit self-end"
-      >
-        {isSavingNote ? (
-          "Saving note..."
-        ) : (
-          <Fragment>
-            <span className="block md:hidden">Save note</span>
-            <span className="hidden md:block">Save note (Shift + Enter)</span>
-          </Fragment>
+      <div className="flex gap-2 mx-auto mr-0 w-full sm:w-fit">
+        <Button
+          disabled={isSavingNote}
+          onClick={isSavingNote ? () => {} : handleSaveNote}
+          className="w-full sm:w-fit self-end"
+        >
+          {isSavingNote ? (
+            "Saving note..."
+          ) : (
+            <Fragment>
+              <span className="block md:hidden">Save note</span>
+              <span className="hidden md:block">Save note (Shift + Enter)</span>
+            </Fragment>
+          )}
+        </Button>
+        {viewSnippetButton && (
+          <Link
+            href={`/snippet/${snippetId}`}
+            className="bg-secondary/10 flex items-center justify-center gap-1.5 text-sm min-w-fit mx-auto mr-0 text-secondary p-2 sm:px-3 sm:py-2 rounded-md border border-secondary"
+            target="_blank"
+          >
+            View snippet
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         )}
-      </Button>
+      </div>
     </Fragment>
   );
 };

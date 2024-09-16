@@ -80,6 +80,15 @@ const Home = async () => {
           rel="noopener noreferrer"
         >
           Indrajit
+        </a>{" "}
+        | Powered by{" "}
+        <a
+          className="text-primary underline underline-offset-2 font-medium"
+          href="https://convex.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Convex
         </a>
       </div>
     </div>
