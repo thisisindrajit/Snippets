@@ -285,7 +285,7 @@ const CSnippet: FC<ICSnippetProps> = ({
             <NotesDialogHolder
               snippetId={snippetId}
               snippetTitle={title}
-              note={noteDetails?.note ?? ""}
+              note={noteDetails?.note}
             />
           )}
         </div>

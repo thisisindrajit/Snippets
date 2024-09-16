@@ -13,7 +13,7 @@ export const getNotesByUserId = query({
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
-    console.log("Calling search for notes func"); // Testing if debounce is working
+    // console.log("Calling search for notes func"); // Testing if debounce is working
     
     let noteDetails: IPaginationResult<Doc<"notes">>;
 
@@ -26,11 +26,13 @@ export const getNotesByUserId = query({
             .eq("noted_by", args.userId as Id<"users">)
         )
         .filter((q) => q.eq(q.field("noted_by"), args.userId))
+        .filter((q) => q.neq(q.field("note"), "")) // Filter out empty notes
         .paginate(args.paginationOpts);
     } else {
       noteDetails = await ctx.db
         .query("notes")
         .filter((q) => q.eq(q.field("noted_by"), args.userId))
+        .filter((q) => q.neq(q.field("note"), "")) // Filter out empty notes
         .order("desc")
         .paginate(args.paginationOpts);
     }

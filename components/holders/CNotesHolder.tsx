@@ -23,7 +23,7 @@ const CNotesHolder = () => {
     } else {
       // debounce the set state
       const timeout = setTimeout(() => {
-        setIsOnlySearchResults(searchQuery.length > 0);
+        setIsOnlySearchResults(searchQuery.trim().length > 0);
       }, 1000);
 
       return () => clearTimeout(timeout);
@@ -49,7 +49,7 @@ const CNotesHolder = () => {
             />
             <div className="flex gap-1 items-center text-neutral-500 text-sm">
               <Info className="h-4 w-4" />
-              Clear any search query to view all notes
+              Clear the search query to view all notes
             </div>
           </div>
         ) : null}

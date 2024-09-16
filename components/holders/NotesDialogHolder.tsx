@@ -7,13 +7,14 @@ import { Id } from "@/convex/_generated/dataModel";
 const NotesDialogHolder: FC<{
   snippetId: Id<"snippets">;
   snippetTitle: string;
-  note: string;
+  note?: string;
 }> = ({ snippetId, snippetTitle, note }) => {
   return (
     <DialogHolder
       dialogTrigger={
-        <div className="border border-primary text-primary p-2 h-full aspect-square flex items-center justify-center rounded-md cursor-pointer">
-          <NotepadText className="h-4 w-4 sm:h-5 sm:w-5" />
+        <div className="border border-primary text-primary p-2 h-full flex items-center justify-center rounded-md cursor-pointer gap-1.5 text-sm">
+          <NotepadText className="h-4 w-4" />
+          {note ? "View" : "Create"} note
         </div>
       }
       title={`Notes for ${snippetTitle}`}
@@ -28,7 +29,7 @@ const NotesDialogHolder: FC<{
         </span>{" "}
         😁
       </div>
-      <CNoteTextAndSaveButton note={note} snippetId={snippetId} />
+      <CNoteTextAndSaveButton note={note ?? ""} snippetId={snippetId} />
     </DialogHolder>
   );
 };
