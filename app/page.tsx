@@ -4,6 +4,9 @@ import { redirect } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import CSnippet from "@/components/CSnippet";
 import { SNIPPETS_SNIPPET_DETAILS } from "@/constants/common";
+import { fetchQuery } from "convex/nextjs";
+import { api } from "@/convex/_generated/api";
+import { TrendingUp } from "lucide-react";
 
 const Home = async () => {
   const { userId }: { userId: string | null } = auth();
@@ -12,10 +15,17 @@ const Home = async () => {
     redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/user/dashboard`);
   }
 
+  const topFiveTrendingSnippets = await fetchQuery(
+    api.snippets.getTopNTrendingSnippets,
+    {
+      count: 5,
+    }
+  );
+
   return (
     <div className="flex flex-col items-center justify-between gap-12 min-h-screen p-4 lg:p-6">
       <TopBar />
-      <div className="flex flex-col gap-6 w-full">
+      <div className="flex flex-col gap-12 w-full">
         {/* Landing page grid */}
         <div className="flex flex-col lg:flex-row w-full gap-2 lg:gap-4">
           {/* First grid */}
@@ -67,6 +77,48 @@ const Home = async () => {
               showLikeSaveAndNotes={false}
               showLinkIcon={false}
             />
+          </div>
+        </div>
+        {/* Top 5 trending snippets */}
+        <div className="flex flex-col gap-4">
+          <div className="flex text-lg xl:text-xl items-center justify-center gap-2 w-fit font-medium mt-2">
+            <span>Top 5 trending snippets</span>
+            <TrendingUp className="h-5 w-5 text-tertiary" />
+          </div>
+          <div
+            className="columns-1 md:columns-2 2xl:columns-3 gap-4"
+            style={{ columnFill: "balance" }}
+          >
+            {topFiveTrendingSnippets.map((snippet) => (
+              <CSnippet
+                key={snippet._id}
+                snippetId={snippet._id}
+                title={snippet.title}
+                requestedBy={snippet.requested_by}
+                requestorName={snippet.requestor_name}
+                requestedOn={new Date(snippet._creationTime)}
+                what={
+                  snippet.data["what"]?.length > 0 ? snippet.data["what"] : []
+                }
+                why={snippet.data["why"]?.length > 0 ? snippet.data["why"] : []}
+                when={
+                  snippet.data["when"]?.length > 0 ? snippet.data["when"] : []
+                }
+                where={
+                  snippet.data["where"]?.length > 0 ? snippet.data["where"] : []
+                }
+                how={snippet.data["how"]?.length > 0 ? snippet.data["how"] : []}
+                amazingFacts={
+                  snippet.data["amazingfacts"]?.length > 0
+                    ? snippet.data["amazingfacts"]
+                    : []
+                }
+                references={snippet?.references ?? []}
+                tags={snippet?.tags ?? []}
+                likesCount={snippet.likes_count}
+                className="break-inside-avoid-column mb-4 border-primary"
+              />
+            ))}
           </div>
         </div>
       </div>

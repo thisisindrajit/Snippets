@@ -4,12 +4,27 @@ import { v } from "convex/values";
 
 // Get snippets
 export const getSnippets = query({
-  args: { paginationOpts: paginationOptsValidator },
+  args: {
+    paginationOpts: paginationOptsValidator,
+  },
   handler: async (ctx, args) => {
     return await ctx.db
       .query("snippets")
+      .withIndex("byLikesCount")
       .order("desc")
       .paginate(args.paginationOpts);
+  },
+});
+
+// Get top n trending snippets
+export const getTopNTrendingSnippets = query({
+  args: { count: v.number() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("snippets")
+      .withIndex("byLikesCount")
+      .order("desc")
+      .take(args.count || 5);
   },
 });
 
@@ -61,7 +76,7 @@ export const createSnippet = mutation({
       references: args.references,
       abstract: args.abstract,
       abstract_embedding: args.abstract_embedding,
-      tags: args.tags
+      tags: args.tags,
     });
 
     return newSnippetId;

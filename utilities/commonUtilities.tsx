@@ -73,7 +73,7 @@ export async function normalizeData(
 function extractTitleDescAndLinks(obj: {
   [x: string]: any;
 }): { title: string; description: string; link: string }[] {
-  const results: { title: string; description: string; link: string }[] = [];
+  const result: { title: string; description: string; link: string }[] = [];
 
   obj.organic.map((searchResult: { [x: string]: any }) => {
     if (
@@ -81,7 +81,7 @@ function extractTitleDescAndLinks(obj: {
       searchResult.link &&
       !searchResult.link.includes("youtube") // Skipping youtube links for now as they won't contain any useful content on just scraping.
     ) {
-      results.push({
+      result.push({
         title: searchResult.title,
         description: searchResult.snippet ?? "No description available 😭",
         link: searchResult.link,
@@ -89,7 +89,7 @@ function extractTitleDescAndLinks(obj: {
     }
   });
 
-  return results;
+  return result;
 }
 
 // Utility function to vectorize the content and store in memory vector database
