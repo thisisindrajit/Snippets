@@ -51,7 +51,7 @@ const Snippet: FC<{
           className="flex gap-2 items-center justify-center"
         >
           <LayoutDashboard className="h-4 w-4" />
-          Go to trending snippets
+          Go to new and trending
         </Button>
       </Link>
       <CSnippet

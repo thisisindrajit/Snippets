@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 export function metadata(): Metadata {
   return {
     title: `Dashboard - ${APP_NAME}`,
-    description: `The dashboard contains the trending snippets.`,
+    description: `The dashboard contains new and trending snippets.`,
   }
 }
 

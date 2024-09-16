@@ -2,15 +2,14 @@ import { paginationOptsValidator } from "convex/server";
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
-// Get snippets
-export const getSnippets = query({
+// Get new and trending snippets
+export const getNewAndTrendingSnippets = query({
   args: {
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
     return await ctx.db
       .query("snippets")
-      .withIndex("byLikesCount")
       .order("desc")
       .paginate(args.paginationOpts);
   },

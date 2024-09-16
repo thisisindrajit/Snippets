@@ -46,11 +46,11 @@ const CSearchBar: FC = () => {
     setWidth(formattedSearchQuery.length);
 
     toast.success(
-      <div className="text-sm/loose">
+      <div className="text-sm/loose text-justify">
         Hurray 🥳, your request for search query{" "}
         <span className="font-semibold italic">{searchQuery}</span> has been
         queued! You will receive a notification when the AI generated snippet is
-        available. Meanwhile you can check out the trending snippets 😎.
+        available. Meanwhile you can check out new and trending snippets 😎.
       </div>,
       {
         duration: 10000,

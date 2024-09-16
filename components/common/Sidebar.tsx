@@ -12,7 +12,7 @@ const SideBar: FC<{ active: number }> = ({ active }) => {
             : "bg-primary/5 text-primary hover:bg-primary hover:text-primary-foreground"
         } flex gap-2 items-center justify-center p-4 w-full rounded-md cursor-pointer transition-all`}
       >
-        <span>Trending snippets</span>
+        <span>New and trending</span>
         <TrendingUp className="h-4 w-4" />
       </Link>
       <Link href="/user/saved"

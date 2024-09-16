@@ -10,7 +10,7 @@ import { Authenticated, AuthLoading } from "convex/react";
 const CSnippetsHolder = () => {
   const { ref, inView } = useInView();
   const { results, status, loadMore } = useStablePaginatedQuery(
-    api.snippets.getSnippets,
+    api.snippets.getNewAndTrendingSnippets,
     {},
     {
       initialNumItems: parseInt(
@@ -35,7 +35,7 @@ const CSnippetsHolder = () => {
       <Authenticated>
         {status === "LoadingFirstPage" ? (
           <div className="w-full text-center my-2">
-            Loading trending snippets ✨
+            Loading new and trending snippets ✨
           </div>
         ) : (
           <div className="flex flex-col gap-6">

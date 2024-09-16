@@ -39,7 +39,7 @@ const DashboardLayout = async ({
             </div>
             <Separator className="block xl:hidden" />
             <div className="flex xl:hidden text-lg xl:text-xl items-center justify-center gap-2 w-fit font-medium mt-2">
-              <span>Trending snippets</span>
+              <span>New and trending</span>
               <TrendingUp className="h-5 w-5 text-tertiary" />
             </div>
           </div>
