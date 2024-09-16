@@ -79,48 +79,52 @@ const Home = async () => {
             />
           </div>
         </div>
-        {/* Top 5 trending snippets */}
-        <div className="flex flex-col gap-4">
-          <div className="flex text-lg xl:text-xl items-center justify-center gap-2 w-fit font-medium mt-2">
-            <span>Top 5 trending snippets</span>
-            <TrendingUp className="h-5 w-5 text-tertiary" />
+        {/* Top 5 trending snippets (if available) */}
+        {topFiveTrendingSnippets.length > 0 && (
+          <div className="flex flex-col gap-4">
+            <div className="flex text-lg xl:text-xl items-center justify-center gap-2 w-fit font-medium mt-2">
+              <span>Top 5 trending snippets</span>
+              <TrendingUp className="h-5 w-5 text-tertiary" />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
+              {topFiveTrendingSnippets.map((snippet) => (
+                <CSnippet
+                  key={snippet._id}
+                  snippetId={snippet._id}
+                  title={snippet.title}
+                  requestedBy={snippet.requested_by}
+                  requestorName={snippet.requestor_name}
+                  requestedOn={new Date(snippet._creationTime)}
+                  what={
+                    snippet.data["what"]?.length > 0 ? snippet.data["what"] : []
+                  }
+                  why={
+                    snippet.data["why"]?.length > 0 ? snippet.data["why"] : []
+                  }
+                  when={
+                    snippet.data["when"]?.length > 0 ? snippet.data["when"] : []
+                  }
+                  where={
+                    snippet.data["where"]?.length > 0
+                      ? snippet.data["where"]
+                      : []
+                  }
+                  how={
+                    snippet.data["how"]?.length > 0 ? snippet.data["how"] : []
+                  }
+                  amazingFacts={
+                    snippet.data["amazingfacts"]?.length > 0
+                      ? snippet.data["amazingfacts"]
+                      : []
+                  }
+                  references={snippet?.references ?? []}
+                  tags={snippet?.tags ?? []}
+                  likesCount={snippet.likes_count}
+                />
+              ))}
+            </div>
           </div>
-          <div
-            className="columns-1 md:columns-2 2xl:columns-3 gap-4"
-            style={{ columnFill: "balance" }}
-          >
-            {topFiveTrendingSnippets.map((snippet) => (
-              <CSnippet
-                key={snippet._id}
-                snippetId={snippet._id}
-                title={snippet.title}
-                requestedBy={snippet.requested_by}
-                requestorName={snippet.requestor_name}
-                requestedOn={new Date(snippet._creationTime)}
-                what={
-                  snippet.data["what"]?.length > 0 ? snippet.data["what"] : []
-                }
-                why={snippet.data["why"]?.length > 0 ? snippet.data["why"] : []}
-                when={
-                  snippet.data["when"]?.length > 0 ? snippet.data["when"] : []
-                }
-                where={
-                  snippet.data["where"]?.length > 0 ? snippet.data["where"] : []
-                }
-                how={snippet.data["how"]?.length > 0 ? snippet.data["how"] : []}
-                amazingFacts={
-                  snippet.data["amazingfacts"]?.length > 0
-                    ? snippet.data["amazingfacts"]
-                    : []
-                }
-                references={snippet?.references ?? []}
-                tags={snippet?.tags ?? []}
-                likesCount={snippet.likes_count}
-                className="break-inside-avoid-column mb-4"
-              />
-            ))}
-          </div>
-        </div>
+        )}
       </div>
       {/* Footer */}
       <div className="text-sm sm:text-base">
