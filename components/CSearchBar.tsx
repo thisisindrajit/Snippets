@@ -73,7 +73,7 @@ const CSearchBar: FC = () => {
             try again.
           </div>,
           {
-            duration: 10000,
+            duration: Infinity,
           }
         );
       }
@@ -85,7 +85,7 @@ const CSearchBar: FC = () => {
           try again.
         </div>,
         {
-          duration: 10000,
+          duration: Infinity,
         }
       );
     }

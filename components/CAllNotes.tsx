@@ -21,7 +21,7 @@ const CAllNotes: FC<{
     },
     {
       initialNumItems: parseInt(
-        process.env.NEXT_PUBLIC_NO_OF_RECORDS_TO_TAKE ?? "10"
+        process.env.NEXT_PUBLIC_NO_OF_RECORDS_TO_TAKE ?? "5"
       ),
     }
   );
@@ -32,7 +32,7 @@ const CAllNotes: FC<{
 
   useEffect(() => {
     if (inView) {
-      loadMore(parseInt(process.env.NEXT_PUBLIC_NO_OF_RECORDS_TO_TAKE ?? "10"));
+      loadMore(parseInt(process.env.NEXT_PUBLIC_NO_OF_RECORDS_TO_TAKE ?? "5"));
     }
   }, [loadMore, inView]);
 

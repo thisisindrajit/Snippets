@@ -65,7 +65,7 @@ export async function normalizeData(
   const extractedTitleDescAndLinks =
     extractTitleDescAndLinks(parsedSearchResults);
 
-  const limit = Number(process.env.NEXT_PUBLIC_LIMIT_FOR_SEARCH_RESULTS ?? 5);
+  const limit = Number(process.env.NEXT_PUBLIC_LIMIT_FOR_SEARCH_RESULTS ?? 4);
   return extractedTitleDescAndLinks.slice(0, limit);
 }
 
@@ -97,17 +97,14 @@ export async function fetchHtmlContentAndVectorize(
   searchQuery: string,
   item: { title: string; description: string; link: string }
 ): Promise<null | DocumentInterface[]> {
-  // const embeddings = new MistralAIEmbeddings({
-  //   apiKey: process.env.MISTRAL_API_KEY,
-  // });
   const embeddings = new FireworksEmbeddings();
   const htmlContent = await fetchPageContentFromLink(item.link);
 
   if (htmlContent && htmlContent.length < 150) return null; // Ignoring content with less than 150 characters
 
   const splitText = await new RecursiveCharacterTextSplitter({
-    chunkSize: 600,
-    chunkOverlap: 200,
+    chunkSize: 200,
+    chunkOverlap: 50,
   }).splitText(htmlContent);
 
   const vectorStore = await MemoryVectorStore.fromTexts(
@@ -116,7 +113,7 @@ export async function fetchHtmlContentAndVectorize(
     embeddings
   );
 
-  return await vectorStore.similaritySearch(searchQuery, 2);
+  return await vectorStore.similaritySearch(searchQuery, 4);
 }
 
 // Helper function to fetch page content from a given link

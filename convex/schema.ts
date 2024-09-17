@@ -39,7 +39,16 @@ export default defineSchema({
     requested_by: v.optional(v.id("users")),
     requestor_name: v.string(),
     type: v.optional(v.id("list_snippet_types")),
-    data: v.any(),
+    data: v.object({
+      what: v.array(v.string()),
+      when: v.array(v.string()),
+      where: v.array(v.string()),
+      why: v.array(v.string()),
+      how: v.array(v.string()),
+      tags: v.array(v.string()),
+      abstract: v.string(),
+      amazingfacts: v.array(v.string()),
+    }),
     references: v.optional(
       v.array(
         v.object({
