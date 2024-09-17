@@ -3,7 +3,7 @@ import { FC } from "react";
 
 const Tabs: FC<{ active: number }> = ({ active }) => {
   return (
-    <div className="grid grid-cols-3 xl:hidden gap-1 rounded-lg border border-primary/50 text-sm p-1 w-full md:w-3/5 m-auto">
+    <div className="grid grid-cols-3 xl:hidden gap-1 rounded-lg border border-primary/50 text-sm p-1 w-full md:w-3/5 m-auto sticky top-[4.5rem] bg-background z-30 shadow-lg">
       <Link href="/user/dashboard" className={`${active === 1 ? "bg-primary text-primary-foreground" : "text-foreground"} py-2 px-4 rounded-md text-center transition-all`}>
         Trending
       </Link>
