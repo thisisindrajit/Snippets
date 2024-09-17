@@ -2,7 +2,7 @@
 import { useRef } from "react";
 import { usePaginatedQuery } from "convex/react";
 
-export const useStablePaginatedQuery = ((name, ...args) => {
+const useStablePaginatedQuery = ((name, ...args) => {
   const result = usePaginatedQuery(name, ...args);
   const stored = useRef(result);
 
@@ -14,3 +14,5 @@ export const useStablePaginatedQuery = ((name, ...args) => {
 
   return stored.current;
 }) as typeof usePaginatedQuery;
+
+export default useStablePaginatedQuery;

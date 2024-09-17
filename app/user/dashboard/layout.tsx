@@ -3,7 +3,7 @@ import CSearchBar from "@/components/CSearchBar";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import SideBar from "@/components/common/Sidebar";
-import Tabs from "@/components/common/Tabs";
+import CTabs from "@/components/common/CTabs";
 import { TrendingUp } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
@@ -23,7 +23,7 @@ const DashboardLayout = async ({
       <TopBar />
       <CSearchBar />
       {/* Tabs (will be shown in smaller screens) */}
-      <Tabs active={1} />
+      <CTabs active={1} />
       <div className="flex gap-4 w-full 2xl:w-[90%] mx-auto">
         {/* Sidebar (will be shown in larger screens) */}
         <SideBar active={1} />

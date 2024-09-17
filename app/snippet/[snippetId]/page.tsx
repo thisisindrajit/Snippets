@@ -50,7 +50,7 @@ const Snippet: FC<{
 
   return (
     <div className="flex flex-col gap-4 w-full 2xl:w-[90%] mx-auto">
-      <Link href={`/user/dashboard`}>
+      <Link href={`/user/dashboard`} className="w-fit">
         <Button
           variant="outline"
           className="flex gap-2 items-center justify-center"

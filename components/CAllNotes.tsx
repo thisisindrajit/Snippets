@@ -1,5 +1,5 @@
 import { api } from "@/convex/_generated/api";
-import { useStablePaginatedQuery } from "@/hooks/useStablePaginatedQuery";
+import useStablePaginatedQuery from "@/hooks/useStablePaginatedQuery";
 import { useAuth } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { Dispatch, FC, Fragment, SetStateAction, useEffect } from "react";

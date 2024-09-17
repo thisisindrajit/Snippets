@@ -3,7 +3,7 @@
 import { Fragment, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { api } from "@/convex/_generated/api";
-import { useStablePaginatedQuery } from "@/hooks/useStablePaginatedQuery";
+import useStablePaginatedQuery from "@/hooks/useStablePaginatedQuery";
 import CSnippet from "../CSnippet";
 import { Authenticated, AuthLoading } from "convex/react";
 
