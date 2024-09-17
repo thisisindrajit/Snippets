@@ -20,7 +20,10 @@ const CReferenceHolder: FC<{
           References
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-80 max-h-[20rem] overflow-auto z-20 border-secondary mt-1 shadow-lg flex flex-col gap-3 p-3">
+      <PopoverContent
+        className="w-80 max-h-[20rem] overflow-auto z-20 border-secondary mt-1 shadow-lg flex flex-col gap-3 p-3"
+        avoidCollisions={false}
+      >
         {references.map((reference, index) => (
           <Link
             key={index}
@@ -33,7 +36,9 @@ const CReferenceHolder: FC<{
               <span className="truncate text-secondary">{reference.title}</span>
               <ExternalLink className="h-4 min-w-[1rem]" />
             </div>
-            <div className="text-sm/loose text-justify">{reference.description}</div>
+            <div className="text-sm/loose text-justify">
+              {reference.description}
+            </div>
           </Link>
         ))}
       </PopoverContent>

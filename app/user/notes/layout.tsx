@@ -3,7 +3,7 @@ import CSearchBar from "@/components/CSearchBar";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import SideBar from "@/components/common/Sidebar";
-import CTabs from "@/components/common/CTabs";
+import Tabs from "@/components/common/Tabs";
 import { Separator } from "@/components/ui/separator";
 
 const NotesLayout = async ({
@@ -22,7 +22,7 @@ const NotesLayout = async ({
       <TopBar />
       <CSearchBar />
       {/* Tabs (will be shown in smaller screens) */}
-      <CTabs active={3} />
+      <Tabs active={3} />
       <div className="flex gap-4 w-full 2xl:w-[90%] mx-auto">
         {/* Sidebar (will be shown in larger screens) */}
         <SideBar active={3} />
