@@ -11,7 +11,7 @@ const SimilarSnippetDetails: FC<{
   tags: string[];
 }> = ({ snippetId, position, title, abstract, tags }) => {
   return (
-    <div className="border border-neutral-300 shadow-lg rounded-lg flex flex-col justify-between p-3 sm:p-4 gap-4 sm:gap-6">
+    <div className="border border-primary shadow-lg rounded-lg flex flex-col justify-between p-3 sm:p-4 gap-4 sm:gap-6">
       <div className="flex flex-col gap-3">
         <div
           className={`text-lg/loose sm:text-xl/relaxed font-medium underline decoration-dotted underline-offset-8 line-clamp-2 capitalize
