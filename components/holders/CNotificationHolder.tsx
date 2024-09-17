@@ -170,6 +170,7 @@ const CNotificationHolder: FC = () => {
                           <Link
                             href={`/${snippetLink}`}
                             className="font-semibold underline"
+                            target="_blank"
                           >
                             here
                           </Link>
