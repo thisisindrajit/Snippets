@@ -58,7 +58,7 @@ export const deleteFromClerk = internalMutation({
       await ctx.db.delete(user._id);
     } else {
       console.warn(
-        `Can't delete user, there is none for Clerk user ID: ${clerkUserId}`
+        `Can't delete user, there is none for Clerk user Id: ${clerkUserId}`
       );
     }
   },

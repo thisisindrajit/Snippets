@@ -23,6 +23,7 @@ import type * as list_snippet_types from "../list_snippet_types.js";
 import type * as notes from "../notes.js";
 import type * as notifications from "../notifications.js";
 import type * as saves from "../saves.js";
+import type * as snippet_embeddings from "../snippet_embeddings.js";
 import type * as snippet_generation_action from "../snippet_generation_action.js";
 import type * as snippets from "../snippets.js";
 import type * as users from "../users.js";
@@ -45,6 +46,7 @@ declare const fullApi: ApiFromModules<{
   notes: typeof notes;
   notifications: typeof notifications;
   saves: typeof saves;
+  snippet_embeddings: typeof snippet_embeddings;
   snippet_generation_action: typeof snippet_generation_action;
   snippets: typeof snippets;
   users: typeof users;

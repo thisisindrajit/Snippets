@@ -51,8 +51,6 @@ export const createSnippet = mutation({
     requestor_name: v.string(),
     type: v.optional(v.id("list_snippet_types")),
     data: v.any(),
-    abstract: v.optional(v.string()),
-    abstract_embedding: v.optional(v.array(v.float64())),
     references: v.optional(
       v.array(
         v.object({
@@ -65,7 +63,7 @@ export const createSnippet = mutation({
     tags: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
-    const newSnippetId = await ctx.db.insert("snippets", {
+    return await ctx.db.insert("snippets", {
       title: args.title,
       likes_count: 0,
       requested_by: args.requested_by,
@@ -73,11 +71,7 @@ export const createSnippet = mutation({
       type: args.type,
       data: args.data,
       references: args.references,
-      abstract: args.abstract,
-      abstract_embedding: args.abstract_embedding,
       tags: args.tags,
     });
-
-    return newSnippetId;
   },
 });

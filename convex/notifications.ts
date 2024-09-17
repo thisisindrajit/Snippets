@@ -40,9 +40,7 @@ export const createNotification = mutation({
       notification_creator: args.notification_creator,
       notification_receiver: args.notification_receiver,
       notification_type: args.notification_type,
-      notification: args.notification,
-      is_read: false,
-      is_cleared: false,
+      notification: args.notification
     });
 
     return newNotificationId;

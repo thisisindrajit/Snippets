@@ -61,7 +61,7 @@ const CSearchBar: FC = () => {
       const isSuccess = await retryFunction(() =>
         generateSnippetAction({
           searchQuery: searchQuery,
-          userId: userId ?? undefined,
+          externalUserId: userId ?? undefined,
         })
       );
 

@@ -14,26 +14,39 @@ export const findSimilarSnippets = action({
       { snippetId: snippetId }
     );
 
-    if (!snippet || !snippet.abstract_embedding) {
+    const snippetEmbedding: Doc<"snippet_embeddings"> | null =
+      await ctx.runQuery(
+        api.snippet_embeddings.getSnippetEmbeddingBySnippetId,
+        { snippetId: snippetId }
+      );
+
+    if (!snippet || !snippetEmbedding?.abstract_embedding) {
       console.error(
-        `Snippet with Id ${snippetId} not found and no similar snippets available.`
+        `Snippet with Id ${snippetId} not found or no embedding found!`
       );
       return [];
     }
 
-    const similarSnippetIds = (
-      await ctx.vectorSearch("snippets", "byAbstractEmbedding", {
-        vector: snippet.abstract_embedding,
+    const similarSnippeEmbeddingIds = (
+      await ctx.vectorSearch("snippet_embeddings", "byAbstractEmbedding", {
+        vector: snippetEmbedding.abstract_embedding,
         limit: 6,
       })
-    ).filter((doc) => doc._id !== snippetId);
+    ).filter((doc) => doc._id !== snippetEmbedding._id);
 
     const result: TSimilarSnippet[] = (
       await Promise.all(
-        similarSnippetIds.map(async (similarSnippet) => {
+        similarSnippeEmbeddingIds.map(async (similarSnippet) => {
+          const similarSnippetEmbedding = await ctx.runQuery(
+            api.snippet_embeddings.getSnippetEmbeddingById,
+            {
+              Id: similarSnippet._id,
+            }
+          );
+
           const snippet: Doc<"snippets"> | null = await ctx.runQuery(
             api.snippets.getSnippetById,
-            { snippetId: similarSnippet._id }
+            { snippetId: similarSnippetEmbedding?.snippet_id }
           );
 
           if (!snippet) {
@@ -43,7 +56,7 @@ export const findSimilarSnippets = action({
           return {
             _id: snippet._id,
             title: snippet.title,
-            abstract: snippet?.abstract ?? "No abstract found! 😢",
+            abstract: similarSnippetEmbedding?.abstract ?? "No abstract found! 😢",
             tags: snippet?.tags ?? [],
           };
         })

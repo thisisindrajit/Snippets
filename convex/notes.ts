@@ -5,7 +5,7 @@ import { getSnippetById } from "./snippets";
 import { Doc, Id } from "./_generated/dataModel";
 import { IPaginationResult } from "../interfaces/IPaginationResult";
 
-// Get notes by user ID
+// Get notes by user Id
 export const getNotesByUserId = query({
   args: {
     searchQuery: v.optional(v.string()),
@@ -14,7 +14,6 @@ export const getNotesByUserId = query({
   },
   handler: async (ctx, args) => {
     // console.log("Calling search for notes func"); // Testing if debounce is working
-    
     let noteDetails: IPaginationResult<Doc<"notes">>;
 
     if (args.searchQuery && args.userId) {

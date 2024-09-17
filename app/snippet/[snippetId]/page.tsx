@@ -20,9 +20,14 @@ export async function generateMetadata({
     snippetId: snippetId as Id<"snippets">,
   });
 
+  const snippetEmbedding = await fetchQuery(
+    api.snippet_embeddings.getSnippetEmbeddingBySnippetId,
+    { snippetId: snippet?._id }
+  );
+
   return {
     title: snippet ? `Snippet about ${snippet.title}` : "No snippet found!",
-    description: snippet?.abstract ?? "No snippet found!",
+    description: snippetEmbedding?.abstract ?? "No snippet found!",
   };
 }
 

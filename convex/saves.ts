@@ -5,7 +5,7 @@ import { IPaginationResult } from "../interfaces/IPaginationResult";
 import { Doc } from "./_generated/dataModel";
 import { getSnippetById } from "./snippets";
 
-// Get saved snippets by user ID
+// Get saved snippets by user Id
 export const getSavedSnippetsByUserId = query({
   args: {
     userId: v.optional(v.id("users")),

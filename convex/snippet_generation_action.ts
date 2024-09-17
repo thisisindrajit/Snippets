@@ -14,13 +14,13 @@ import { TSnippet } from "../types/TSnippet";
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export const generateSnippet = action({
-  args: { searchQuery: v.optional(v.string()), userId: v.optional(v.string()) },
+  args: { searchQuery: v.optional(v.string()), externalUserId: v.optional(v.string()) },
   handler: async (ctx, args) => {
-    const { searchQuery, userId } = args;
+    const { searchQuery, externalUserId } = args;
 
-    if (!searchQuery || !userId) {
+    if (!searchQuery || !externalUserId) {
       console.error(
-        "Invalid input. Please provide a search query and a user ID."
+        "Invalid input. Please provide a search query and an external user Id."
       );
       return false;
     }
@@ -29,6 +29,13 @@ export const generateSnippet = action({
       console.error("Groq not initialized. Check whether the API key is set.");
       return false;
     }
+
+    // Get user details based on external user Id
+    const userDetails = (
+      await ctx.runQuery(api.users.getUserByExternalId, {
+        externalId: externalUserId,
+      })
+    );
 
     // STEP 1: Get topic based on the search query
     const topicGenerationByLlm = await groq.chat.completions.create({
@@ -64,11 +71,7 @@ export const generateSnippet = action({
       await ctx.runMutation(api.notifications.createNotification, {
         notification: searchQuery,
         notification_creator: undefined,
-        notification_receiver: (
-          await ctx.runQuery(api.users.getUserByExternalId, {
-            externalId: userId,
-          })
-        )?._id,
+        notification_receiver: userDetails?._id,
         notification_type: (
           await ctx.runQuery(
             api.list_notification_types.getNotificationTypeDetails,
@@ -103,11 +106,7 @@ export const generateSnippet = action({
       await ctx.runMutation(api.notifications.createNotification, {
         notification: searchQuery,
         notification_creator: undefined,
-        notification_receiver: (
-          await ctx.runQuery(api.users.getUserByExternalId, {
-            externalId: userId,
-          })
-        )?._id,
+        notification_receiver: userDetails?._id,
         notification_type: (
           await ctx.runQuery(
             api.list_notification_types.getNotificationTypeDetails,
@@ -163,11 +162,7 @@ export const generateSnippet = action({
       await ctx.runMutation(api.notifications.createNotification, {
         notification: searchQuery,
         notification_creator: undefined,
-        notification_receiver: (
-          await ctx.runQuery(api.users.getUserByExternalId, {
-            externalId: userId,
-          })
-        )?._id,
+        notification_receiver: userDetails?._id,
         notification_type: (
           await ctx.runQuery(
             api.list_notification_types.getNotificationTypeDetails,
@@ -190,17 +185,8 @@ export const generateSnippet = action({
     const createdSnippetId = await ctx.runMutation(api.snippets.createSnippet, {
       title: searchQuery,
       likes_count: 0,
-      requested_by: (
-        await ctx.runQuery(api.users.getUserByExternalId, {
-          externalId: userId,
-        })
-      )?._id,
-      requestor_name:
-        (
-          await ctx.runQuery(api.users.getUserByExternalId, {
-            externalId: userId,
-          })
-        )?.firstName || "Snippets user",
+      requested_by: userDetails?._id,
+      requestor_name: userDetails?.firstName || "Snippets user",
       type: (
         await ctx.runQuery(api.list_snippet_types.getSnippetTypeDetails, {
           snippetType: "5w1h",
@@ -208,19 +194,20 @@ export const generateSnippet = action({
       )?._id, // For now, only generating 5W1H type snippets
       data: data,
       tags: tags,
+      references: similarTextChunksAndReferences?.references ?? undefined,
+    });
+
+    // Create embedding of snippet
+    await ctx.runMutation(api.snippet_embeddings.createSnippet, {
+      snippet_id: createdSnippetId,
       abstract: abstract,
       abstract_embedding: abstract_embedding,
-      references: similarTextChunksAndReferences?.references ?? undefined,
     });
 
     await ctx.runMutation(api.notifications.createNotification, {
       notification: `${searchQuery}|snippet/${createdSnippetId}`,
       notification_creator: undefined,
-      notification_receiver: (
-        await ctx.runQuery(api.users.getUserByExternalId, {
-          externalId: userId,
-        })
-      )?._id,
+      notification_receiver: userDetails?._id,
       notification_type: (
         await ctx.runQuery(
           api.list_notification_types.getNotificationTypeDetails,
