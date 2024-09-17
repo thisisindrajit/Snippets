@@ -28,6 +28,7 @@ const CNoteTextAndSaveButton: FC<{
   const handleKeyDown = async (e: KeyboardEvent<HTMLTextAreaElement>) => {
     // Run if shift + enter is pressed
     if (e.key === "Enter" && e.shiftKey) {
+      e.preventDefault();
       await handleSaveNote();
     }
   };
