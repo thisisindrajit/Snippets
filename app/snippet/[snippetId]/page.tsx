@@ -8,6 +8,7 @@ import { fetchQuery } from "convex/nextjs";
 import { Id } from "@/convex/_generated/dataModel";
 import CSnippet from "@/components/CSnippet";
 import { Metadata } from "next";
+import { revalidatePath } from "next/cache";
 
 export async function generateMetadata({
   params,
@@ -48,6 +49,11 @@ const Snippet: FC<{
     redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/user/dashboard`);
   }
 
+  const revalidatePageAfterAction = async () => {
+    "use server"
+    revalidatePath(`/snippet/${snippetId}`);
+  }
+  
   return (
     <div className="flex flex-col gap-4 w-full 2xl:w-[90%] mx-auto">
       <Link href={`/user/dashboard`} className="w-fit">
@@ -80,6 +86,7 @@ const Snippet: FC<{
         tags={snippet?.tags ?? []}
         showLinkIcon={false}
         likesCount={snippet.likes_count}
+        revalidatePageAfterAction={revalidatePageAfterAction}
       />
     </div>
   );

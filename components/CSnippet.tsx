@@ -45,6 +45,7 @@ interface ICSnippetProps {
   capitalizeTitle?: boolean;
   showLinkIcon?: boolean;
   showLikeSaveAndNotes?: boolean;
+  revalidatePageAfterAction?: () => void;
 }
 
 const CSnippet: FC<ICSnippetProps> = ({
@@ -66,6 +67,7 @@ const CSnippet: FC<ICSnippetProps> = ({
   capitalizeTitle = true,
   showLinkIcon = true,
   showLikeSaveAndNotes = true,
+  revalidatePageAfterAction
 }) => {
   const { userId } = useAuth();
   const categoryArray = [what, when, where, why, how];
@@ -151,6 +153,8 @@ const CSnippet: FC<ICSnippetProps> = ({
       isLiked: !isLikedByUser,
       modifiedBy: userByExternalId?._id,
     });
+
+    revalidatePageAfterAction && revalidatePageAfterAction();
   };
 
   const saveDetails = useQuery(api.saves.getSaveDetails, {
