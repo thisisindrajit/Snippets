@@ -25,7 +25,7 @@ import { useAuth } from "@clerk/nextjs";
 import NotesDialogHolder from "./holders/NotesDialogHolder";
 import CSimilarSnippetsHolder from "./holders/CSimilarSnippetsHolder";
 
-interface ICSnippetProps {
+const CSnippet: FC<{
   snippetId: Id<"snippets">;
   title: string;
   requestedBy?: Id<"users">;
@@ -46,9 +46,7 @@ interface ICSnippetProps {
   showLinkIcon?: boolean;
   showLikeSaveAndNotes?: boolean;
   revalidatePageAfterAction?: () => void;
-}
-
-const CSnippet: FC<ICSnippetProps> = ({
+}> = ({
   snippetId,
   title,
   requestorName,
@@ -67,7 +65,7 @@ const CSnippet: FC<ICSnippetProps> = ({
   capitalizeTitle = true,
   showLinkIcon = true,
   showLikeSaveAndNotes = true,
-  revalidatePageAfterAction
+  revalidatePageAfterAction,
 }) => {
   const { userId } = useAuth();
   const categoryArray = [what, when, where, why, how];
