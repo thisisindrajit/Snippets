@@ -44,6 +44,7 @@ const CSnippet: FC<{
   className?: string;
   capitalizeTitle?: boolean;
   showLinkIcon?: boolean;
+  showShareButton?: boolean;
   showLikeSaveAndNotes?: boolean;
   revalidatePageAfterAction?: () => void;
 }> = ({
@@ -64,6 +65,7 @@ const CSnippet: FC<{
   className,
   capitalizeTitle = true,
   showLinkIcon = true,
+  showShareButton = false,
   showLikeSaveAndNotes = true,
   revalidatePageAfterAction,
 }) => {
@@ -341,59 +343,75 @@ const CSnippet: FC<{
           </ul>
         </div>
       )}
-      {userId && showLikeSaveAndNotes && (
-        <div className="flex items-center w-full gap-2 h-10 select-none">
-          <div
-            className="bg-red-50 flex items-center justify-center gap-1.5 text-sm w-fit text-red-600 p-2.5 sm:px-4 sm:py-3 h-full rounded-md cursor-pointer border border-red-600"
-            onClick={handleLike}
-          >
-            {isLikedByUser ? (
-              <Heart className="h-4 w-4 fill-red-600" />
-            ) : (
-              <Heart className="h-4 w-4" />
-            )}
-            {likesCount}
-          </div>
-          <div
-            className="bg-orange-50 flex items-center justify-center gap-1.5 text-sm w-fit text-orange-600 p-2.5 sm:px-4 sm:py-3 h-full rounded-md cursor-pointer border border-orange-600"
-            onClick={handleSave}
-          >
-            {isSavedByUser ? (
-              <Fragment>
-                <Bookmark className="h-4 w-4 fill-orange-600" />
-                <span>Saved</span>
-              </Fragment>
-            ) : (
-              <Fragment>
-                <Bookmark className="h-4 w-4" />
-                <span>Save</span>
-              </Fragment>
-            )}
-          </div>
-          <DialogHolder
-            dialogTrigger={
-              <div className="bg-emerald-50 text-sm w-fit text-emerald-600 rounded-md cursor-pointer border border-emerald-600 p-2.5 sm:p-3 h-full aspect-square flex items-center justify-center">
-                <Share className="h-4 w-4" />
-              </div>
-            }
-            title="Share snippet"
-          >
-            <CShareDialogContentHolder
-              title={title}
-              link={`${process.env.NEXT_PUBLIC_BASE_URL}/snippet/${snippetId}`}
-            />
-          </DialogHolder>
-          {showLinkIcon && (
-            <Link
-              href={`/snippet/${snippetId}`}
-              className="bg-primary/10 flex items-center justify-center gap-1.5 text-sm h-full w-fit mx-auto mr-0 text-primary p-2 sm:px-3 sm:py-2 rounded-md border border-primary aspect-square xs:aspect-auto"
-              target="_blank"
+      {userId ? (
+        showLikeSaveAndNotes && (
+          <div className="flex items-center w-full gap-2 h-10 select-none">
+            <div
+              className="bg-red-50 flex items-center justify-center gap-1.5 text-sm w-fit text-red-600 p-2.5 sm:px-4 sm:py-3 h-full rounded-md cursor-pointer border border-red-600"
+              onClick={handleLike}
             >
-              <span className="hidden xs:block">View</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          )}
-        </div>
+              {isLikedByUser ? (
+                <Heart className="h-4 w-4 fill-red-600" />
+              ) : (
+                <Heart className="h-4 w-4" />
+              )}
+              {likesCount}
+            </div>
+            <div
+              className="bg-orange-50 flex items-center justify-center gap-1.5 text-sm w-fit text-orange-600 p-2.5 sm:px-4 sm:py-3 h-full rounded-md cursor-pointer border border-orange-600"
+              onClick={handleSave}
+            >
+              {isSavedByUser ? (
+                <Fragment>
+                  <Bookmark className="h-4 w-4 fill-orange-600" />
+                  <span>Saved</span>
+                </Fragment>
+              ) : (
+                <Fragment>
+                  <Bookmark className="h-4 w-4" />
+                  <span>Save</span>
+                </Fragment>
+              )}
+            </div>
+            <DialogHolder
+              dialogTrigger={
+                <div className="bg-emerald-50 text-sm w-fit text-emerald-600 rounded-md cursor-pointer border border-emerald-600 p-2.5 sm:p-3 h-full aspect-square flex items-center justify-center">
+                  <Share className="h-4 w-4" />
+                </div>
+              }
+              title="Share snippet"
+            >
+              <CShareDialogContentHolder
+                title={title}
+                link={`${process.env.NEXT_PUBLIC_BASE_URL}/snippet/${snippetId}`}
+              />
+            </DialogHolder>
+            {showLinkIcon && (
+              <Link
+                href={`/snippet/${snippetId}`}
+                className="bg-primary/10 flex items-center justify-center gap-1.5 text-sm h-full w-fit mx-auto mr-0 text-primary p-2 sm:px-3 sm:py-2 rounded-md border border-primary aspect-square xs:aspect-auto"
+                target="_blank"
+              >
+                <span className="hidden xs:block">View</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            )}
+          </div>
+        )
+      ) : (showShareButton && <DialogHolder
+          dialogTrigger={
+            <div className="bg-emerald-50 text-sm w-fit text-emerald-600 rounded-md cursor-pointer border border-emerald-600 p-2.5 h-full flex items-center justify-center gap-2 mx-auto mr-0">
+              <Share className="h-4 w-4" />
+              <span>Share snippet</span>
+            </div>
+          }
+          title="Share snippet"
+        >
+          <CShareDialogContentHolder
+            title={title}
+            link={`${process.env.NEXT_PUBLIC_BASE_URL}/snippet/${snippetId}`}
+          />
+        </DialogHolder>
       )}
     </div>
   );

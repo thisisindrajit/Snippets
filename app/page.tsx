@@ -120,6 +120,7 @@ const Home = async () => {
                   references={snippet?.references ?? []}
                   tags={snippet?.tags ?? []}
                   likesCount={snippet.likes_count}
+                  showShareButton
                 />
               ))}
             </div>

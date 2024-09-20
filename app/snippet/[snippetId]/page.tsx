@@ -1,7 +1,4 @@
-import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
-import { LayoutDashboard } from "lucide-react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FC } from "react";
 import { fetchQuery } from "convex/nextjs";
@@ -55,16 +52,7 @@ const Snippet: FC<{
   }
   
   return (
-    <div className="flex flex-col gap-4 w-full 2xl:w-[90%] mx-auto">
-      <Link href={`/user/dashboard`} className="w-fit">
-        <Button
-          variant="outline"
-          className="flex gap-2 items-center justify-center"
-        >
-          <LayoutDashboard className="h-4 w-4" />
-          Go to new and trending
-        </Button>
-      </Link>
+    <div className="flex flex-col w-full xl:w-[90%] mx-auto">
       <CSnippet
         key={snippet._id}
         snippetId={snippet._id}
