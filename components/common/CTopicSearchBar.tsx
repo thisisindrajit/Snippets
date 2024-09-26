@@ -94,7 +94,9 @@ const CTopicSearchBar: FC = () => {
         await snippetGenerationErrorHandler();
       }
     } catch (error) {
-      console.error(`Some error occurred while generating snippet: ${error}`);
+      console.error(
+        `Some error occurred while generating snippet. ${error instanceof Error && error.message}`
+      );
       await snippetGenerationErrorHandler();
     }
 
