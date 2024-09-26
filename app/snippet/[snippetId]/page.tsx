@@ -69,7 +69,7 @@ const Snippet: FC<{
         tags={snippet?.tags ?? []}
         abstract={snippet?.abstract}
         abstractEmbeddingId={snippet?.abstract_embedding_id}
-        showLinkIcon={false}
+        showViewButton={false}
         likesCount={snippet.likes_count}
         revalidatePageAfterAction={revalidatePageAfterAction}
       />

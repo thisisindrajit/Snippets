@@ -75,7 +75,7 @@ const Home = async () => {
               tags={SNIPPETS_SNIPPET_DETAILS.tags}
               className="h-full lg:pb-8"
               showLikeSaveAndNotes={false}
-              showLinkIcon={false}
+              showViewButton={false}
             />
           </div>
         </div>
