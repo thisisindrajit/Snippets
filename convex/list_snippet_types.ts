@@ -6,9 +6,11 @@ export const getSnippetTypeDetails = query({
     snippetType: v.string(),
   },
   handler: async (ctx, args) => {
+    const { snippetType } = args;
+
     return await ctx.db
       .query("list_snippet_types")
-      .filter((q) => q.eq(q.field("snippet_type"), args.snippetType))
-      .first();
+      .filter((q) => q.eq(q.field("snippet_type"), snippetType))
+      .unique();
   },
 });

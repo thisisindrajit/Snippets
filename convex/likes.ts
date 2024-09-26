@@ -7,17 +7,20 @@ export const getLikeDetails = query({
     likedBy: v.optional(v.id("users")),
   },
   handler: async (ctx, args) => {
-    if (!args.snippetId || !args.likedBy) {
+    const { snippetId, likedBy } = args;
+
+    // If snippetId or likedBy is not provided, return null
+    if (!snippetId || !likedBy) {
+      console.error("snippetId or likedBy not provided!");
       return null;
     }
 
-    const likedSnippet = await ctx.db
+    return await ctx.db
       .query("likes")
-      .filter((q) => q.eq(q.field("snippet_id"), args.snippetId))
-      .filter((q) => q.eq(q.field("liked_by"), args.likedBy))
-      .first();
-
-    return likedSnippet;
+      .withIndex("bySnippetIdAndLikedBy", (q) =>
+        q.eq("snippet_id", snippetId).eq("liked_by", likedBy)
+      )
+      .unique();
   },
 });
 
@@ -29,18 +32,21 @@ export const likeOrUnlikeSnippet = mutation({
     modifiedBy: v.optional(v.id("users")),
   },
   handler: async (ctx, args) => {
-    if (!args.modifiedBy) {
-      throw new Error("modifiedBy argument not provided!");
+    const { snippetId, isLiked, modifiedBy } = args;
+
+    if (!modifiedBy) {
+      console.error("modifiedBy not provided!");
+      return false;
     }
 
-    const currentSnippet = await ctx.db.get(args.snippetId);
+    const currentSnippet = await ctx.db.get(snippetId);
 
     // If the snippet is liked, insert a new like record, else delete the existing like record
-    if (args.isLiked) {
+    if (isLiked) {
       await Promise.all([
         ctx.db.insert("likes", {
-          snippet_id: args.snippetId,
-          liked_by: args.modifiedBy,
+          snippet_id: snippetId,
+          liked_by: modifiedBy,
         }),
         currentSnippet &&
           ctx.db.patch(currentSnippet._id, {
@@ -49,14 +55,12 @@ export const likeOrUnlikeSnippet = mutation({
       ]);
     } else {
       const likeDetails = await getLikeDetails(ctx, {
-        snippetId: args.snippetId,
-        likedBy: args.modifiedBy,
+        snippetId: snippetId,
+        likedBy: modifiedBy,
       });
 
       await Promise.all([
-        likeDetails &&
-          likeDetails._id &&
-          (await ctx.db.delete(likeDetails._id)),
+        likeDetails?._id && (await ctx.db.delete(likeDetails._id)),
         currentSnippet &&
           ctx.db.patch(currentSnippet._id, {
             likes_count: currentSnippet.likes_count - 1,

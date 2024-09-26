@@ -1,4 +1,4 @@
-import TopBar from "@/components/TopBar";
+import TopBar from "@/components/common/TopBar";
 
 const SnippetLayout = async ({
   children, // will be a page or nested layout

@@ -1,3 +1,5 @@
+"use node"
+
 import { v } from "convex/values";
 import { internalAction } from "./_generated/server";
 import { Resend } from "resend";
@@ -5,14 +7,9 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const sendWelcomeEmail = internalAction({
-  args: { email: v.optional(v.string()), firstName: v.optional(v.string()) },
+  args: { email: v.string(), firstName: v.optional(v.string()) },
   handler: async (actionCtx, args) => {
     const { email, firstName } = args;
-
-    if (!email) {
-      console.error(`Can't send welcome email as email is missing`);
-      return;
-    }
 
     const { data, error } = await resend.emails.send({
       from: "Snippets <hello@exploresnippets.today>",
@@ -73,9 +70,12 @@ export const sendWelcomeEmail = internalAction({
     });
 
     if (error) {
-      return console.error({ error });
+      console.error(
+        `Some error occurred while sending welcome email - ${error}`
+      );
+      return;
     }
 
-    console.log({ data });
+    console.log(`Welcome email sent to ${email} - ${data}`);
   },
 });

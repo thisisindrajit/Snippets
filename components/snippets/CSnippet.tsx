@@ -8,22 +8,22 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "./ui/carousel";
-import { Card, CardContent } from "./ui/card";
+} from "../ui/carousel";
+import { Card, CardContent } from "../ui/card";
 import Markdown from "react-markdown";
 import { convertToPrettyDateFormatInLocalTimezone } from "@/utilities/commonUtilities";
-import CReferenceHolder from "@/components/holders/CReferenceHolder";
+import CReferencesHolder from "@/components/holders/CReferencesHolder";
 import { ArrowRight, Bookmark, Heart, Share } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import DialogHolder from "./holders/DialogHolder";
-import CShareDialogContentHolder from "./holders/CShareDialogHolder";
+import DialogHolder from "../holders/DialogHolder";
+import CShareDialogContentHolder from "../holders/CShareDialogHolder";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useAuth } from "@clerk/nextjs";
-import NotesDialogHolder from "./holders/NotesDialogHolder";
-import CSimilarSnippetsHolder from "./holders/CSimilarSnippetsHolder";
+import NotesDialogHolder from "../holders/NotesDialogHolder";
+import CSimilarSnippetsHolder from "../holders/CSimilarSnippetsHolder";
 
 const CSnippet: FC<{
   snippetId: Id<"snippets">;
@@ -40,6 +40,8 @@ const CSnippet: FC<{
   amazingFacts: string[];
   references: { link: string; title: string; description: string }[];
   tags: string[];
+  abstract?: string;
+  abstractEmbeddingId?: Id<"abstract_embeddings">;
   likesCount?: number;
   className?: string;
   capitalizeTitle?: boolean;
@@ -61,6 +63,8 @@ const CSnippet: FC<{
   amazingFacts,
   references,
   tags,
+  abstract,
+  abstractEmbeddingId,
   likesCount,
   className,
   capitalizeTitle = true,
@@ -232,7 +236,7 @@ const CSnippet: FC<{
           </div>
           {userId && (
             <CSimilarSnippetsHolder
-              snippetId={snippetId}
+              abstractEmbeddingId={abstractEmbeddingId}
               snippetTitle={title}
             />
           )}
@@ -261,7 +265,7 @@ const CSnippet: FC<{
             5W1H (AI generated)
           </div>
           {references?.length > 0 && (
-            <CReferenceHolder references={references} />
+            <CReferencesHolder references={references} />
           )}
         </div>
         <div className="flex flex-wrap gap-2 mt-2">
@@ -383,6 +387,7 @@ const CSnippet: FC<{
             >
               <CShareDialogContentHolder
                 title={title}
+                abstract={abstract}
                 link={`${process.env.NEXT_PUBLIC_BASE_URL}/snippet/${snippetId}`}
               />
             </DialogHolder>
@@ -409,6 +414,7 @@ const CSnippet: FC<{
         >
           <CShareDialogContentHolder
             title={title}
+            abstract={abstract}
             link={`${process.env.NEXT_PUBLIC_BASE_URL}/snippet/${snippetId}`}
           />
         </DialogHolder>

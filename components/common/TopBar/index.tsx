@@ -7,7 +7,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import CTopBarHolder from "./CTopBarHolder";
 import Link from "next/link";
 import { Trophy } from "lucide-react";
-import CNotificationHolder from "../holders/CNotificationHolder";
+import CNotificationHolder from "@/components/holders/CNotificationHolder";
 
 const TopBar: FC = async () => {
   const user = await currentUser();

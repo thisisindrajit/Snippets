@@ -4,7 +4,7 @@ import { Fragment, useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { api } from "@/convex/_generated/api";
 import useStablePaginatedQuery from "@/hooks/useStablePaginatedQuery";
-import CSnippet from "../CSnippet";
+import CSnippet from "../snippets/CSnippet";
 import { Authenticated, AuthLoading } from "convex/react";
 
 const CSnippetsHolder = () => {
@@ -86,6 +86,8 @@ const CSnippetsHolder = () => {
                       }
                       references={snippet?.references ?? []}
                       tags={snippet?.tags ?? []}
+                      abstract={snippet?.abstract}
+                      abstractEmbeddingId={snippet?.abstract_embedding_id}
                       likesCount={snippet.likes_count}
                     />
                   );

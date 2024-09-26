@@ -6,12 +6,16 @@ import { ArrowRight, RotateCw } from "lucide-react";
 import { FC, ChangeEvent, FormEvent, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "sonner";
-import { useAction } from "convex/react";
+import { useAction, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { retryFunction } from "@/utilities/commonUtilities";
+import { fetchMutation } from "convex/nextjs";
 
-const CSearchBar: FC = () => {
+const CTopicSearchBar: FC = () => {
   const { userId } = useAuth();
+  const userByExternalId = useQuery(api.users.getUserByExternalId, {
+    externalId: userId ?? undefined,
+  });
   const generateSnippetAction = useAction(
     api.snippet_generation_action.generateSnippet
   );
@@ -19,6 +23,27 @@ const CSearchBar: FC = () => {
   const [generatingSnippet, setGeneratingSnippet] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [width, setWidth] = useState(18);
+
+  const snippetGenerationErrorHandler = async () => {
+    userByExternalId &&
+      (await fetchMutation(api.notifications.createNotification, {
+        notification: searchQuery,
+        notification_creator: undefined,
+        notification_receiver: userByExternalId._id,
+        type: "error", // fetching notification type for error
+      }));
+
+    toast.error(
+      <div className="text-sm/loose">
+        Error while generating snippet for search query{" "}
+        <span className="font-semibold italic">{searchQuery}</span>! Please try
+        again.
+      </div>,
+      {
+        duration: Infinity,
+      }
+    );
+  };
 
   const changeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -66,28 +91,11 @@ const CSearchBar: FC = () => {
       );
 
       if (!isSuccess) {
-        toast.error(
-          <div className="text-sm/loose">
-            Error while generating snippet for search query{" "}
-            <span className="font-semibold italic">{searchQuery}</span>! Please
-            try again.
-          </div>,
-          {
-            duration: Infinity,
-          }
-        );
+        await snippetGenerationErrorHandler();
       }
     } catch (error) {
-      toast.error(
-        <div className="text-sm/loose">
-          Error while generating snippet for search query{" "}
-          <span className="font-semibold italic">{searchQuery}</span>! Please
-          try again.
-        </div>,
-        {
-          duration: Infinity,
-        }
-      );
+      console.error(`Some error occurred while generating snippet: ${error}`);
+      await snippetGenerationErrorHandler();
     }
 
     setSearchQuery("");
@@ -136,4 +144,4 @@ const CSearchBar: FC = () => {
   );
 };
 
-export default CSearchBar;
+export default CTopicSearchBar;

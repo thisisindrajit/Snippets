@@ -1,5 +1,5 @@
-import TopBar from "@/components/TopBar";
-import CSearchBar from "@/components/CSearchBar";
+import TopBar from "@/components/common/TopBar";
+import CTopicSearchBar from "@/components/common/CTopicSearchBar";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import SideBar from "@/components/common/Sidebar";
@@ -21,7 +21,7 @@ const DashboardLayout = async ({
   return (
     <div className="flex flex-col gap-12 p-4 lg:p-6">
       <TopBar />
-      <CSearchBar />
+      <CTopicSearchBar />
       {/* Tabs (will be shown in smaller screens) */}
       <Tabs active={1} />
       <div className="flex gap-4 w-full 2xl:w-[90%] mx-auto">

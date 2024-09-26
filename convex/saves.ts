@@ -3,7 +3,6 @@ import { mutation, query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
 import { IPaginationResult } from "../interfaces/IPaginationResult";
 import { Doc } from "./_generated/dataModel";
-import { getSnippetById } from "./snippets";
 
 // Get saved snippets by user Id
 export const getSavedSnippetsByUserId = query({
@@ -12,18 +11,28 @@ export const getSavedSnippetsByUserId = query({
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
+    const { userId, paginationOpts } = args;
+    let result: IPaginationResult<Doc<"snippets"> & { saved_at: number }> = {
+      page: [],
+      isDone: true,
+      continueCursor: "",
+    };
+
+    if (!userId) {
+      console.error("userId not provided!");
+      return result;
+    }
+
     const saveDetails = await ctx.db
       .query("saves")
-      .filter((q) => q.eq(q.field("saved_by"), args.userId))
+      .withIndex("bySavedBy", (q) => q.eq("saved_by", userId))
       .order("desc")
-      .paginate(args.paginationOpts);
+      .paginate(paginationOpts);
 
     const savedSnippets = (
       await Promise.all(
         saveDetails.page.map(async (saveDetail) => {
-          const snippet = await getSnippetById(ctx, {
-            snippetId: saveDetail.snippet_id,
-          });
+          const snippet = await ctx.db.get(saveDetail.snippet_id);
 
           return snippet
             ? { ...snippet, saved_at: saveDetail._creationTime }
@@ -34,7 +43,7 @@ export const getSavedSnippetsByUserId = query({
       saved_at: number;
     })[];
 
-    const result: IPaginationResult<Doc<"snippets"> & { saved_at: number }> = {
+    result = {
       page: savedSnippets,
       isDone: saveDetails.isDone,
       continueCursor: saveDetails.continueCursor,
@@ -53,17 +62,19 @@ export const getSaveDetails = query({
     savedBy: v.optional(v.id("users")),
   },
   handler: async (ctx, args) => {
-    if (!args.snippetId || !args.savedBy) {
+    const { snippetId, savedBy } = args;
+
+    if (!snippetId || !savedBy) {
+      console.error("snippetId or savedBy not provided!");
       return null;
     }
 
-    const savedSnippet = await ctx.db
+    return await ctx.db
       .query("saves")
-      .filter((q) => q.eq(q.field("snippet_id"), args.snippetId))
-      .filter((q) => q.eq(q.field("saved_by"), args.savedBy))
-      .first();
-
-    return savedSnippet;
+      .withIndex("bySnippetIdAndSavedBy", (q) =>
+        q.eq("snippet_id", snippetId).eq("saved_by", savedBy)
+      )
+      .unique();
   },
 });
 
@@ -75,23 +86,26 @@ export const saveOrUnsaveSnippet = mutation({
     modifiedBy: v.optional(v.id("users")),
   },
   handler: async (ctx, args) => {
-    if (!args.modifiedBy) {
-      throw new Error("modifiedBy argument not provided!");
+    const { snippetId, isSaved, modifiedBy } = args;
+
+    if (!modifiedBy) {
+      console.error("modifiedBy argument not provided!");
+      return false;
     }
 
     // If the snippet is saved, insert a new save record, else delete the existing save record
-    if (args.isSaved) {
+    if (isSaved) {
       await ctx.db.insert("saves", {
-        snippet_id: args.snippetId,
-        saved_by: args.modifiedBy,
+        snippet_id: snippetId,
+        saved_by: modifiedBy,
       });
     } else {
       const saveDetails = await getSaveDetails(ctx, {
-        snippetId: args.snippetId,
-        savedBy: args.modifiedBy,
+        snippetId: snippetId,
+        savedBy: modifiedBy,
       });
 
-      saveDetails && saveDetails._id && (await ctx.db.delete(saveDetails._id));
+      saveDetails?._id && (await ctx.db.delete(saveDetails._id));
     }
 
     return true;

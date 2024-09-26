@@ -1,6 +1,6 @@
 import { NotepadText } from "lucide-react";
 import { FC } from "react";
-import CNoteTextAndSaveButton from "../Note/CNoteTextAndSaveButton";
+import CNoteTextAndSaveButton from "../notes/Note/CNoteTextAndSaveButton";
 import DialogHolder from "./DialogHolder";
 import { Id } from "@/convex/_generated/dataModel";
 

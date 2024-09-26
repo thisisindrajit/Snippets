@@ -9,7 +9,7 @@ import {
 import { ClipboardList, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
-const CReferenceHolder: FC<{
+const CReferencesHolder: FC<{
   references: { link: string; title: string; description: string }[];
 }> = ({ references }) => {
   return (
@@ -46,4 +46,4 @@ const CReferenceHolder: FC<{
   );
 };
 
-export default CReferenceHolder;
+export default CReferencesHolder;

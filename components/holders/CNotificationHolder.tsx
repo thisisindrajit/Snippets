@@ -23,7 +23,6 @@ const CNotificationHolder: FC = () => {
   const userByExternalId = useQuery(api.users.getUserByExternalId, {
     externalId: userId ?? undefined,
   });
-
   const notifications = useQuery(api.notifications.getNotificationsByUserId, {
     userId: userByExternalId?._id ?? undefined,
   });

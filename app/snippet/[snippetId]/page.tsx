@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { FC } from "react";
 import { fetchQuery } from "convex/nextjs";
 import { Id } from "@/convex/_generated/dataModel";
-import CSnippet from "@/components/CSnippet";
+import CSnippet from "@/components/snippets/CSnippet";
 import { Metadata } from "next";
 import { revalidatePath } from "next/cache";
 
@@ -18,14 +18,9 @@ export async function generateMetadata({
     snippetId: snippetId as Id<"snippets">,
   });
 
-  const snippetEmbedding = await fetchQuery(
-    api.snippet_embeddings.getSnippetEmbeddingBySnippetId,
-    { snippetId: snippet?._id }
-  );
-
   return {
     title: snippet ? `Snippet about ${snippet.title}` : "No snippet found!",
-    description: snippetEmbedding?.abstract ?? "No snippet found!",
+    description: snippet?.abstract ?? "No snippet found!",
   };
 }
 
@@ -72,6 +67,8 @@ const Snippet: FC<{
         }
         references={snippet?.references ?? []}
         tags={snippet?.tags ?? []}
+        abstract={snippet?.abstract}
+        abstractEmbeddingId={snippet?.abstract_embedding_id}
         showLinkIcon={false}
         likesCount={snippet.likes_count}
         revalidatePageAfterAction={revalidatePageAfterAction}

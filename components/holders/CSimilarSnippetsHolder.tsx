@@ -6,14 +6,14 @@ import { useAction } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { retryFunction } from "@/utilities/commonUtilities";
 import { TSimilarSnippet } from "@/types/TSimilarSnippet";
-import SimilarSnippetDetails from "../SimilarSnippetDetails";
+import SimilarSnippetDetails from "../snippets/SimilarSnippetDetails";
 
 const CSimilarSnippetsHolder: FC<{
-  snippetId: Id<"snippets">;
+  abstractEmbeddingId?: Id<"abstract_embeddings">;
   snippetTitle: string;
-}> = ({ snippetId, snippetTitle }) => {
+}> = ({ abstractEmbeddingId, snippetTitle }) => {
   const findSimilarSnippetsAction = useAction(
-    api.find_similar_snippets_action.findSimilarSnippets
+    api.similar_snippets_action.findSimilarSnippets
   );
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -25,14 +25,14 @@ const CSimilarSnippetsHolder: FC<{
       try {
         similarSnippets = await retryFunction(() =>
           findSimilarSnippetsAction({
-            snippetId: snippetId,
+            abstractEmbeddingId: abstractEmbeddingId,
           })
         );
 
         setSimilarSnippets(similarSnippets);
       } catch (error) {
         console.error(
-          `Error while fetching similar snippets for snippet ${snippetId}`,
+          `Error while fetching similar snippets for snippet with embedding id ${abstractEmbeddingId}`,
           error
         );
       }
@@ -40,7 +40,7 @@ const CSimilarSnippetsHolder: FC<{
     };
 
     getSimilarSnippets(); // eslint-disable-line
-  }, [findSimilarSnippetsAction, snippetId]);
+  }, [findSimilarSnippetsAction, abstractEmbeddingId]);
 
   return (
     <DialogHolder

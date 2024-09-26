@@ -3,6 +3,7 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import * as cheerio from "cheerio";
 import { DocumentInterface } from "@langchain/core/documents";
+import { clear } from "console";
 
 // Utility function to retry a function for a given number of times
 export async function retryFunction(fn: any, retries = 3) {
@@ -51,7 +52,7 @@ export async function searchForSources(topic: string): Promise<string> {
   );
 
   if (!searchResults.ok) {
-    throw "Error fetching search results from Serper API";
+    throw new Error("Error fetching search results from Serper API");
   }
 
   return await searchResults.text();
@@ -65,7 +66,7 @@ export async function normalizeData(
   const extractedTitleDescAndLinks =
     extractTitleDescAndLinks(parsedSearchResults);
 
-  const limit = Number(process.env.NEXT_PUBLIC_LIMIT_FOR_SEARCH_RESULTS ?? 4);
+  const limit = Number(process.env.LIMIT_FOR_SEARCH_RESULTS ?? 5);
   return extractedTitleDescAndLinks.slice(0, limit);
 }
 
@@ -100,11 +101,11 @@ export async function fetchHtmlContentAndVectorize(
   const embeddings = new FireworksEmbeddings();
   const htmlContent = await fetchPageContentFromLink(item.link);
 
-  if (htmlContent && htmlContent.length < 150) return null; // Ignoring content with less than 150 characters
+  if (!htmlContent || htmlContent.length < 150) return null; // Return null if no content is fetched or content is too short
 
   const splitText = await new RecursiveCharacterTextSplitter({
-    chunkSize: 200,
-    chunkOverlap: 50,
+    chunkSize: 250,
+    chunkOverlap: 100,
   }).splitText(htmlContent);
 
   const vectorStore = await MemoryVectorStore.fromTexts(
@@ -113,11 +114,11 @@ export async function fetchHtmlContentAndVectorize(
     embeddings
   );
 
-  return await vectorStore.similaritySearch(searchQuery, 4);
+  return await vectorStore.similaritySearch(searchQuery, 5);
 }
 
 // Helper function to fetch page content from a given link
-async function fetchPageContentFromLink(link: string): Promise<string> {
+async function fetchPageContentFromLink(link: string): Promise<string | null> {
   try {
     const userAgents = [
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36 Edg/119.0.0.0",
@@ -125,17 +126,21 @@ async function fetchPageContentFromLink(link: string): Promise<string> {
     ];
 
     for (let i = 0; i < userAgents.length; i++) {
+      console.log(
+        `Fetching page content for ${link} using user agent: ${userAgents[i]}`
+      );
+
       const responseText = await fetchDataFromUrl(link, userAgents[i]);
 
-      if (responseText.length > 0) {
+      if (responseText && responseText.length > 0) {
         return extractMainContent(responseText);
       }
     }
 
-    return ""; // Return empty string if no content is fetched
+    return null; // Return null if no content is fetched
   } catch (error) {
     console.error(`Error fetching page content for ${link}:`);
-    return "";
+    return null;
   }
 }
 
@@ -143,21 +148,36 @@ async function fetchPageContentFromLink(link: string): Promise<string> {
 async function fetchDataFromUrl(
   url: string,
   userAgent: string
-): Promise<string> {
+): Promise<string | null> {
   const headers: HeadersInit = {
     "User-agent": userAgent,
   };
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: headers,
-  });
+  const controller = new AbortController();
+  const reason = new DOMException('signal timed out', 'TimeoutError');
+  const timeoutId = setTimeout(() => controller.abort(reason), 5000);
 
-  if (!response.ok) {
-    return ""; // Return empty string if response is not ok
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: headers,
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      return null; // Return null if response is not ok
+    }
+
+    return await response.text();
+  } catch (error) {
+    clearTimeout(timeoutId);
+    
+    console.error(
+      `Error fetching data from URL: ${url} with user agent: ${userAgent} - ${error}`
+    );
+
+    return null; // Return null if error occurs
   }
-
-  return await response.text();
 }
 
 // Helper function to extract main content from the HTML page using cheerio
@@ -274,9 +294,11 @@ export function convertToPrettyDateFormatInLocalTimezone(
 }
 
 // Utility function to create an embedding from a query
-export async function createEmbeddingFromQuery(query: string): Promise<number[]> {
+export async function createEmbeddingFromQuery(
+  query: string
+): Promise<number[]> {
   const embeddings = new FireworksEmbeddings();
   const embedding = await embeddings.embedQuery(query);
-  
+
   return embedding;
 }

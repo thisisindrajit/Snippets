@@ -9,50 +9,60 @@ import {
   normalizeData,
   searchForSources,
 } from "../utilities/commonUtilities";
-import { TSnippet } from "../types/TSnippet";
+import { TGeneratedSnippetData } from "../types/TGeneratedSnippetData";
+import { Id } from "./_generated/dataModel";
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export const generateSnippet = action({
-  args: { searchQuery: v.optional(v.string()), externalUserId: v.optional(v.string()) },
+  args: {
+    searchQuery: v.optional(v.string()),
+    externalUserId: v.optional(v.string()),
+  },
   handler: async (ctx, args) => {
     const { searchQuery, externalUserId } = args;
 
     if (!searchQuery || !externalUserId) {
-      console.error(
-        "Invalid input. Please provide a search query and an external user Id."
-      );
+      console.error("searchQuery or externalUserId not provided!");
       return false;
     }
 
     if (!groq) {
-      console.error("Groq not initialized. Check whether the API key is set.");
+      console.error("Groq not initialized. Check whether the API key is set!");
       return false;
     }
 
     // Get user details based on external user Id
-    const userDetails = (
-      await ctx.runQuery(api.users.getUserByExternalId, {
-        externalId: externalUserId,
-      })
-    );
+    const user = await ctx.runQuery(api.users.getUserByExternalId, {
+      externalId: externalUserId,
+    });
+
+    if (!user) {
+      console.error(`User with externalUserId ${externalUserId} not found!`);
+      return false;
+    }
+
+    // Start timer to get the time taken for the snippet generation
+    const startTime = new Date().getTime();
 
     // STEP 1: Get topic based on the search query
     const topicGenerationByLlm = await groq.chat.completions.create({
       messages: [
         {
           role: "system",
-          content: `Create a concise search query for the given input that can be used in a search engine API to retrieve general information about the input.
+          content:
+            process.env.TOPIC_GENERATION_PROMPT ??
+            `Create a concise search query for the given input that can be used in a search engine API to retrieve general information about the input.
               The query should:
               1.Be no longer than 5-7 words.
               2.Include the most relevant keywords related to the topic.
-              3.Include 'overview' or 'introduction' if applicable to focus on general information.
+              3.Include the keyword 'introduction', 'wiki' or 'overview' if applicable to focus on general information.
               4.Do not add any quotation marks or extra words.
               Return only the search query string, without any additional explanation or formatting. If you don't have any information about the input, just return NO INFORMATION.`,
         },
         { role: "user", content: searchQuery },
       ],
-      model: "llama3-70b-8192",
+      model: process.env.TOPIC_GENERATION_MODEL ?? "llama3-70b-8192",
     });
 
     let topic = {
@@ -71,13 +81,8 @@ export const generateSnippet = action({
       await ctx.runMutation(api.notifications.createNotification, {
         notification: searchQuery,
         notification_creator: undefined,
-        notification_receiver: userDetails?._id,
-        notification_type: (
-          await ctx.runQuery(
-            api.list_notification_types.getNotificationTypeDetails,
-            { notificationType: "no information" }
-          )
-        )?._id, // fetching notification type for no information
+        notification_receiver: user._id,
+        type: "no information", // fetching notification type for no information
       });
 
       return false;
@@ -106,13 +111,8 @@ export const generateSnippet = action({
       await ctx.runMutation(api.notifications.createNotification, {
         notification: searchQuery,
         notification_creator: undefined,
-        notification_receiver: userDetails?._id,
-        notification_type: (
-          await ctx.runQuery(
-            api.list_notification_types.getNotificationTypeDetails,
-            { notificationType: "error" }
-          )
-        )?._id, // fetching notification type for error
+        notification_receiver: user._id,
+        type: "error", // fetching notification type for error
       });
 
       return false;
@@ -136,13 +136,17 @@ export const generateSnippet = action({
       messages: [
         {
           role: "system",
-          content: `Here is my topic - ${searchQuery}. Create a comprehensive summary of the given topic using the 4W1H framework (What, Why, When, Where, How). For each category, provide an array of 2 complete, grammatically correct sentences using simple, concise language. In each category:
-              1.Ensure the information is accurate and relevant to the main topic, avoiding any speculative or unsupported details.
-              2.Make sure to highlight 2-4 important words or phrases in each sentence using markdown bold format.
-              3.Choose highlights that are key concepts, important terms, or significant details related to the category and main topic.
-              4.Prioritize highlighting words that are separate words or phrases, rather than parts of a larger word or phrase.
-              5.Each sentence must contain a maximum of 50 words.
-              Present the result as a JSON object only with these keys: what, why, when, where, how, amazingfacts, abstract, tags. Include 3 amazing, unknown and interesting facts about the topic in the amazingfacts array if available. Include a short abstract about the topic within 50 words in abstract. Include 5 general tags about the topic in the tags array. Do not include hashes and return just the tags. The tags must be in such a way that it describes the topic in a general manner. Focus on creating a broadly applicable summary, avoiding overly specific details from any provided context. The summary should be informative and relevant even without specific context. If you lack sufficient credible information about the topic, return only an EMPTY OBJECT.`,
+          content: `Here is my topic - ${searchQuery}. ${
+            process.env.SNIPPET_GENERATION_PROMPT ??
+            `Create a comprehensive summary of the given topic using the 5W1H framework (What, Why, When, Where, How). For each category, provide an array of 2 complete, grammatically correct sentences. Use simple, concise language to accurately understand the content. Present the result as a JSON object only with these keys: what, why, when, where, how, amazingfacts, abstract, tags. In the keys 'what', 'why', 'when', 'where', 'how' and 'amazingfacts', follow these guidelines:
+            1.Ensure the information is accurate and relevant to the main topic, avoiding any speculative or unsupported details.
+            2.Make sure to highlight 2-4 important words or phrases in each sentence using markdown bold format.
+            3.Choose highlights that are key concepts, important terms, or significant details related to the category and main topic.
+            4.Prioritize highlighting words that are separate words or phrases, rather than parts of a larger word or phrase.
+            5.Each sentence can contain a maximum of 50 words.
+            6.Include 3 amazing, unknown and interesting facts about the topic in the amazingfacts array if available. 
+            Also include a short abstract about the topic within 50 words in abstract. I want the abstract only in plain text format. Include 5 general tags about the topic in the tags array. Do not include hashes and return just the tags. The tags must be in such a way that it describes the topic in a general manner. Focus on creating a broadly applicable summary, avoiding overly specific details from any provided context. The summary should be informative and relevant even without specific context. If you lack sufficient credible information about the topic, return only an EMPTY OBJECT.`
+          }`,
         },
         {
           role: "user",
@@ -152,7 +156,7 @@ export const generateSnippet = action({
               : "",
         },
       ],
-      model: "llama3-70b-8192",
+      model: process.env.SNIPPET_GENERATION_MODEL ?? "llama3-70b-8192",
       response_format: { type: "json_object" },
     });
 
@@ -163,58 +167,69 @@ export const generateSnippet = action({
       await ctx.runMutation(api.notifications.createNotification, {
         notification: searchQuery,
         notification_creator: undefined,
-        notification_receiver: userDetails?._id,
-        notification_type: (
-          await ctx.runQuery(
-            api.list_notification_types.getNotificationTypeDetails,
-            { notificationType: "error" }
-          )
-        )?._id, // fetching notification type for error
+        notification_receiver: user._id,
+        type: "error", // fetching notification type for error
       });
 
       return false;
     }
 
     // Get all required data from the generated snippet
-    const data = JSON.parse(generatedSnippet) as TSnippet;
+    const data = JSON.parse(generatedSnippet) as TGeneratedSnippetData;
     const tags = data.tags;
     const abstract = data.abstract;
 
     // Create embedding of abstract
-    const abstract_embedding = abstract ? await createEmbeddingFromQuery(abstract) : undefined;
+    const abstract_embedding = abstract
+      ? await createEmbeddingFromQuery(abstract)
+      : undefined;
+
+    let abstractEmbeddingId: Id<"abstract_embeddings"> | undefined = undefined;
+
+    // Create embedding of abstract if available
+    if (abstract_embedding) {
+      abstractEmbeddingId = await ctx.runMutation(
+        api.abstract_embeddings.createAbstractEmbedding,
+        {
+          embedding: abstract_embedding,
+        }
+      );
+    }
+
+    // End the time taken for the snippet generation
+    const endTime = new Date().getTime();
 
     const createdSnippetId = await ctx.runMutation(api.snippets.createSnippet, {
       title: searchQuery,
       likes_count: 0,
-      requested_by: userDetails?._id,
-      requestor_name: userDetails?.firstName || "Snippets user",
+      requested_by: user._id,
+      requestor_name: user.firstName || "Snippets user",
       type: (
         await ctx.runQuery(api.list_snippet_types.getSnippetTypeDetails, {
           snippetType: "5w1h",
         })
       )?._id, // For now, only generating 5W1H type snippets
-      data: data,
-      tags: tags,
-      references: similarTextChunksAndReferences?.references ?? undefined,
-    });
-
-    // Create embedding of snippet
-    await ctx.runMutation(api.snippet_embeddings.createSnippet, {
-      snippet_id: createdSnippetId,
+      model_used: `${process.env.SNIPPET_GENERATION_MODEL} | ${(endTime - startTime) / 1000} second(s)`, // Add the model used for snippet generation and time taken in seconds for generation
+      topic_generated: topic.generatedByLlm ? topic.data : undefined,
+      data: {
+        what: data.what,
+        why: data.why,
+        when: data.when,
+        where: data.where,
+        how: data.how,
+        amazingfacts: data.amazingfacts ?? [],
+      },
+      references: similarTextChunksAndReferences?.references,
       abstract: abstract,
-      abstract_embedding: abstract_embedding,
+      abstract_embedding_id: abstractEmbeddingId,
+      tags: tags,
     });
 
     await ctx.runMutation(api.notifications.createNotification, {
       notification: `${searchQuery}|snippet/${createdSnippetId}`,
       notification_creator: undefined,
-      notification_receiver: userDetails?._id,
-      notification_type: (
-        await ctx.runQuery(
-          api.list_notification_types.getNotificationTypeDetails,
-          { notificationType: "generated snippet" }
-        )
-      )?._id, // fetching notification type for generated snippet
+      notification_receiver: user._id,
+      type: "generated snippet", // fetching notification type for generated snippet
     });
 
     return true;

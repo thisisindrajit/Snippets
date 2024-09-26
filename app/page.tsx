@@ -1,8 +1,8 @@
-import TopBar from "@/components/TopBar";
+import TopBar from "@/components/common/TopBar";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
-import CSnippet from "@/components/CSnippet";
+import CSnippet from "@/components/snippets/CSnippet";
 import { SNIPPETS_SNIPPET_DETAILS } from "@/constants/common";
 import { fetchQuery } from "convex/nextjs";
 import { api } from "@/convex/_generated/api";
@@ -119,6 +119,8 @@ const Home = async () => {
                   }
                   references={snippet?.references ?? []}
                   tags={snippet?.tags ?? []}
+                  abstract={snippet?.abstract}
+                  abstractEmbeddingId={snippet?.abstract_embedding_id}
                   likesCount={snippet.likes_count}
                   showShareButton
                 />

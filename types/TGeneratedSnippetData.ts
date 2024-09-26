@@ -1,4 +1,4 @@
-export type TSnippet = {
+export type TGeneratedSnippetData = {
   what: string;
   why: string;
   when: string;

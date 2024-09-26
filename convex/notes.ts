@@ -1,8 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { paginationOptsValidator } from "convex/server";
-import { getSnippetById } from "./snippets";
-import { Doc, Id } from "./_generated/dataModel";
+import { Doc } from "./_generated/dataModel";
 import { IPaginationResult } from "../interfaces/IPaginationResult";
 
 // Get notes by user Id
@@ -13,35 +12,44 @@ export const getNotesByUserId = query({
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
-    // console.log("Calling search for notes func"); // Testing if debounce is working
+    const { searchQuery, userId, paginationOpts } = args;
+    let result: IPaginationResult<
+      Doc<"snippets"> & { note: string; noted_at: number }
+    > = {
+      page: [],
+      isDone: true,
+      continueCursor: "",
+    };
+
+    // If userId is not provided, return null
+    if (!userId) {
+      console.error("userId not provided!");
+      return result;
+    }
+
     let noteDetails: IPaginationResult<Doc<"notes">>;
 
-    if (args.searchQuery && args.userId) {
+    if (searchQuery && userId) {
       noteDetails = await ctx.db
         .query("notes")
         .withSearchIndex("searchNote", (q) =>
-          q
-            .search("note", args.searchQuery as string)
-            .eq("noted_by", args.userId as Id<"users">)
+          q.search("note", searchQuery).eq("noted_by", userId)
         )
-        .filter((q) => q.eq(q.field("noted_by"), args.userId))
         .filter((q) => q.neq(q.field("note"), "")) // Filter out empty notes
-        .paginate(args.paginationOpts);
+        .paginate(paginationOpts);
     } else {
       noteDetails = await ctx.db
         .query("notes")
-        .filter((q) => q.eq(q.field("noted_by"), args.userId))
+        .withIndex("byNotedby", (q) => q.eq("noted_by", userId))
         .filter((q) => q.neq(q.field("note"), "")) // Filter out empty notes
         .order("desc")
-        .paginate(args.paginationOpts);
+        .paginate(paginationOpts);
     }
 
     const snippetsForWhichNotesHaveBeenAdded = (
       await Promise.all(
         noteDetails.page.map(async (noteDetail) => {
-          const snippet = await getSnippetById(ctx, {
-            snippetId: noteDetail.snippet_id,
-          });
+          const snippet = await ctx.db.get(noteDetail.snippet_id);
 
           return snippet
             ? {
@@ -57,9 +65,7 @@ export const getNotesByUserId = query({
       noted_at: number;
     })[];
 
-    const result: IPaginationResult<
-      Doc<"snippets"> & { note: string; noted_at: number }
-    > = {
+    result = {
       page: snippetsForWhichNotesHaveBeenAdded,
       isDone: noteDetails.isDone,
       continueCursor: noteDetails.continueCursor,
@@ -78,17 +84,20 @@ export const getNoteDetails = query({
     notedBy: v.optional(v.id("users")),
   },
   handler: async (ctx, args) => {
-    if (!args.snippetId || !args.notedBy) {
+    const { snippetId, notedBy } = args;
+
+    // If snippetId or notedBy is not provided, return null
+    if (!snippetId || !notedBy) {
+      console.error("snippetId or notedBy not provided!");
       return null;
     }
 
-    const note = await ctx.db
+    return await ctx.db
       .query("notes")
-      .filter((q) => q.eq(q.field("snippet_id"), args.snippetId))
-      .filter((q) => q.eq(q.field("noted_by"), args.notedBy))
-      .first();
-
-    return note;
+      .withIndex("bySnippetIdAndNotedBy", (q) =>
+        q.eq("snippet_id", snippetId).eq("noted_by", notedBy)
+      )
+      .unique();
   },
 });
 
@@ -100,25 +109,28 @@ export const upsertNote = mutation({
     notedBy: v.optional(v.id("users")),
   },
   handler: async (ctx, args) => {
-    if (!args.notedBy) {
-      throw new Error("notedBy argument not provided!");
+    const { snippetId, note, notedBy } = args;
+
+    if (!notedBy) {
+      console.error("notedBy argument not provided!");
+      return false;
     }
 
     const currentNote = await getNoteDetails(ctx, {
-      snippetId: args.snippetId,
-      notedBy: args.notedBy,
+      snippetId: snippetId,
+      notedBy: notedBy,
     });
 
     // If the note exists, update it, else insert a new note
     if (currentNote) {
       await ctx.db.patch(currentNote._id, {
-        note: args.note,
+        note: note,
       });
     } else {
       await ctx.db.insert("notes", {
-        snippet_id: args.snippetId,
-        note: args.note,
-        noted_by: args.notedBy,
+        snippet_id: snippetId,
+        note: note,
+        noted_by: notedBy,
       });
     }
 

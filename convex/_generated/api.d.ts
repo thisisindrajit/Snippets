@@ -14,8 +14,7 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as email from "../email.js";
-import type * as find_similar_snippets_action from "../find_similar_snippets_action.js";
+import type * as abstract_embeddings from "../abstract_embeddings.js";
 import type * as http from "../http.js";
 import type * as likes from "../likes.js";
 import type * as list_notification_types from "../list_notification_types.js";
@@ -23,10 +22,11 @@ import type * as list_snippet_types from "../list_snippet_types.js";
 import type * as notes from "../notes.js";
 import type * as notifications from "../notifications.js";
 import type * as saves from "../saves.js";
-import type * as snippet_embeddings from "../snippet_embeddings.js";
+import type * as similar_snippets_action from "../similar_snippets_action.js";
 import type * as snippet_generation_action from "../snippet_generation_action.js";
 import type * as snippets from "../snippets.js";
 import type * as users from "../users.js";
+import type * as welcome_email_internal_action from "../welcome_email_internal_action.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -37,8 +37,7 @@ import type * as users from "../users.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  email: typeof email;
-  find_similar_snippets_action: typeof find_similar_snippets_action;
+  abstract_embeddings: typeof abstract_embeddings;
   http: typeof http;
   likes: typeof likes;
   list_notification_types: typeof list_notification_types;
@@ -46,10 +45,11 @@ declare const fullApi: ApiFromModules<{
   notes: typeof notes;
   notifications: typeof notifications;
   saves: typeof saves;
-  snippet_embeddings: typeof snippet_embeddings;
+  similar_snippets_action: typeof similar_snippets_action;
   snippet_generation_action: typeof snippet_generation_action;
   snippets: typeof snippets;
   users: typeof users;
+  welcome_email_internal_action: typeof welcome_email_internal_action;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,

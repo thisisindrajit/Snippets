@@ -21,8 +21,9 @@ import { Copy } from "lucide-react";
 
 const CShareDialogContentHolder: FC<{
   title: string;
+  abstract?: string;
   link: string;
-}> = ({ title, link }) => {
+}> = ({ title, abstract, link }) => {
   const iconCommonClassName = "h-9 w-9 rounded-md";
   const fullText = `Check out this snippet titled "${title}"`;
   const separator = " - ";
@@ -57,6 +58,13 @@ const CShareDialogContentHolder: FC<{
           <Copy className="h-4 w-4" />
         </Button>
       </div>
+      {/* Abstract */}
+      {abstract && (
+        <div className="bg-primary/5 border border-primary px-3 py-2 rounded-md flex flex-col gap-1">
+          <span className="text-base/loose font-medium">{title}</span>
+          <span className="text-sm/loose text-justify">{abstract}</span>
+        </div>
+      )}
       <HorizontalSeparatorWithText text="or share to" className="text-sm" />
       {/* Social icons */}
       <div className="flex flex-wrap justify-center self-center gap-2 w-fit">

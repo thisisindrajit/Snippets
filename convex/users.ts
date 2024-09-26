@@ -8,18 +8,14 @@ export const getUserByExternalId = query({
     externalId: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    if (!args.externalId) {
+    const { externalId } = args;
+
+    if (!externalId) {
+      console.error("externalId not provided!");
       return null;
     }
 
-    return await userByExternalId(ctx, args.externalId);
-  },
-});
-
-export const current = query({
-  args: {},
-  handler: async (ctx) => {
-    return await getCurrentUser(ctx);
+    return await userByExternalId(ctx, externalId);
   },
 });
 
@@ -36,12 +32,17 @@ export const upsertFromClerk = internalMutation({
     };
 
     const user = await userByExternalId(ctx, data.id);
+    
     if (user === null) {
       await ctx.db.insert("users", userAttributes);
-      await ctx.scheduler.runAfter(0, internal.email.sendWelcomeEmail, {
-        firstName: userAttributes.firstName ?? undefined,
-        email: userAttributes.primaryEmail,
-      })
+      await ctx.scheduler.runAfter(
+        0,
+        internal.welcome_email_internal_action.sendWelcomeEmail,
+        {
+          firstName: userAttributes.firstName ?? undefined,
+          email: userAttributes.primaryEmail,
+        }
+      );
     } else {
       userAttributes.totalRewards = user.totalRewards;
       await ctx.db.patch(user._id, userAttributes);
@@ -63,23 +64,6 @@ export const deleteFromClerk = internalMutation({
     }
   },
 });
-
-export async function getCurrentUserOrThrow(ctx: QueryCtx) {
-  const userRecord = await getCurrentUser(ctx);
-  if (!userRecord) throw new Error("Can't get current user");
-  return userRecord;
-}
-
-export async function getCurrentUser(ctx: QueryCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-
-  console.log("I", identity);
-
-  if (identity === null) {
-    return null;
-  }
-  return await userByExternalId(ctx, identity.subject);
-}
 
 async function userByExternalId(ctx: QueryCtx, externalId: string) {
   return await ctx.db

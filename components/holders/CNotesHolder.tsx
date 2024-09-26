@@ -3,8 +3,8 @@
 import { ChangeEvent, Fragment, useEffect, useState } from "react";
 import { Authenticated, AuthLoading } from "convex/react";
 import { Input } from "../ui/input";
-import CAllNotes from "../CAllNotes";
-import CSearchedNotes from "../CSearchedNotes";
+import CAllNotes from "../notes/CAllNotes";
+import CSearchedNotes from "../notes/CSearchedNotes";
 import { Info } from "lucide-react";
 
 const CNotesHolder = () => {

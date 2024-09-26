@@ -6,9 +6,11 @@ export const getNotificationTypeDetails = query({
     notificationType: v.string(),
   },
   handler: async (ctx, args) => {
+    const { notificationType } = args;
+
     return await ctx.db
       .query("list_notification_types")
-      .filter((q) => q.eq(q.field("notification_type"), args.notificationType))
-      .first();
+      .filter((q) => q.eq(q.field("notification_type"), notificationType))
+      .unique();
   },
 });
