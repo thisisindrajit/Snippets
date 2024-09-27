@@ -129,7 +129,7 @@ const CTopicSearchBar: FC = () => {
           readOnly={generatingSnippet}
         />
         {generatingSnippet ? (
-          <div className="h-10 w-10 rounded-full border-[1.5px] border-tertiary bg-tertiary/10 text-tertiary flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full border-[1.5px] border-tertiary bg-tertiary/5 text-tertiary flex items-center justify-center">
             <RotateCw className="animate-spin h-5 w-5" />
           </div>
         ) : (

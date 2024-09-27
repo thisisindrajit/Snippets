@@ -366,7 +366,7 @@ const CSnippet: FC<{
       {userId && showLikeSaveAndNotes && (
         <div className="flex items-center w-full gap-2 h-10 select-none">
           <div
-            className="bg-red-50 flex items-center justify-center gap-1.5 text-sm w-fit text-red-600 p-2.5 sm:px-4 sm:py-3 h-full rounded-md cursor-pointer border border-red-600"
+            className="bg-red-50 flex items-center justify-center gap-1.5 text-sm w-fit text-red-600 p-2.5 sm:p-3 h-full rounded-md cursor-pointer border border-red-600"
             onClick={handleLike}
           >
             {isLikedByUser ? (
@@ -377,7 +377,7 @@ const CSnippet: FC<{
             {likesCount}
           </div>
           <div
-            className="bg-orange-50 flex items-center justify-center gap-1.5 text-sm w-fit text-orange-600 p-2.5 sm:px-4 sm:py-3 h-full rounded-md cursor-pointer border border-orange-600"
+            className="bg-orange-50 flex items-center justify-center gap-1.5 text-sm w-fit text-orange-600 p-2.5 sm:p-3 h-full rounded-md cursor-pointer border border-orange-600"
             onClick={handleSave}
           >
             {isSavedByUser ? (
@@ -409,7 +409,7 @@ const CSnippet: FC<{
           {showViewButton && (
             <Link
               href={`/snippet/${snippetId}`}
-              className="bg-primary/10 flex items-center justify-center gap-1.5 text-sm h-full w-fit mx-auto mr-0 text-primary p-2 sm:px-3 sm:py-2 rounded-md border border-primary aspect-square xs:aspect-auto"
+              className="bg-primary/5 flex items-center justify-center gap-1.5 text-sm h-full w-fit mx-auto mr-0 text-primary p-2.5 sm:p-3 rounded-md border border-primary aspect-square xs:aspect-auto"
               target="_blank"
             >
               <span className="hidden xs:block">View</span>

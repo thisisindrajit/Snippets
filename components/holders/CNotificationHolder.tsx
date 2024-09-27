@@ -113,7 +113,7 @@ const CNotificationHolder: FC = () => {
                     return (
                       <div
                         key={notification._id}
-                        className="bg-orange-300/10 border border-orange-500 text-orange-500 p-3 rounded-md flex flex-col gap-4 leading-loose text-justify"
+                        className="bg-orange-300/5 border border-orange-500 text-orange-500 p-3 rounded-md flex flex-col gap-4 leading-loose text-justify"
                       >
                         <span>
                           No information found for search query{" "}
@@ -133,7 +133,7 @@ const CNotificationHolder: FC = () => {
                     return (
                       <div
                         key={notification._id}
-                        className="bg-destructive/10 border border-destructive text-destructive p-3 rounded-md flex flex-col gap-4 leading-loose text-justify"
+                        className="bg-destructive/5 border border-destructive text-destructive p-3 rounded-md flex flex-col gap-4 leading-loose text-justify"
                       >
                         <span>
                           Some error occurred 😭 while generating snippet for
@@ -157,7 +157,7 @@ const CNotificationHolder: FC = () => {
                     return (
                       <div
                         key={notification._id}
-                        className="bg-secondary/10 border border-secondary text-secondary p-3 rounded-md flex flex-col gap-4 leading-loose text-justify"
+                        className="bg-secondary/5 border border-secondary text-secondary p-3 rounded-md flex flex-col gap-4 leading-loose text-justify"
                       >
                         <span>
                           Snippet has been successfully generated 🥳 for search

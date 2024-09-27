@@ -115,7 +115,7 @@ const CNoteTextAndSaveButton: FC<{
         {viewSnippetButton && (
           <Link
             href={`/snippet/${snippetId}`}
-            className="bg-secondary/10 flex items-center justify-center gap-1.5 text-sm min-w-fit mx-auto mr-0 text-secondary p-2 sm:px-3 sm:py-2 rounded-md border border-secondary"
+            className="bg-secondary/5 flex items-center justify-center gap-1.5 text-sm min-w-fit mx-auto mr-0 text-secondary p-2 sm:px-3 sm:py-2 rounded-md border border-secondary"
             target="_blank"
           >
             View snippet
