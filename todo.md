@@ -1,6 +1,10 @@
 - [ ] Develop rewards logic and leaderboard page for rewards
-
 - [ ] Optimize paginated query to include zustand and cursor in paginated query to cache results
+- [ ] Dark mode
+- [ ] Advanced search functionality
+- [ ] Better note taking features
+- [ ] Random quizzes to test learning
+- [ ] Full screen reels like feature
 
 # Upcoming features:
 

@@ -3,7 +3,6 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import * as cheerio from "cheerio";
 import { DocumentInterface } from "@langchain/core/documents";
-import { clear } from "console";
 
 // Utility function to retry a function for a given number of times
 export async function retryFunction(fn: any, retries = 3) {

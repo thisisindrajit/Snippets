@@ -78,10 +78,10 @@ const CNotificationHolder: FC = () => {
             <div className="absolute rounded-[50%] h-4 w-4 flex flex-col items-center justify-center bg-secondary text-secondary-foreground text-[10px] p-2.5 right-[-10px] top-[-10px]">
               {notificationBadgeCount > 9 ? "9+" : notificationBadgeCount}
             </div>
-            <Bell className="h-7 w-7 cursor-pointer rounded-lg bg-background p-1.5 text-secondary border border-secondary" />
+            <Bell className="h-8 w-8 cursor-pointer rounded-lg bg-background p-[7px] text-secondary border border-secondary" />
           </div>
         ) : (
-          <Bell className="h-7 w-7 cursor-pointer rounded-lg bg-background p-1.5 text-secondary border border-secondary" />
+          <Bell className="h-8 w-8 cursor-pointer rounded-lg bg-background p-[7px] text-secondary border border-secondary" />
         )}
       </SheetTrigger>
       <SheetContent
