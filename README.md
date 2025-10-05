@@ -7,10 +7,10 @@ In our rapidly changing digital age, the way we absorb information is shifting d
 I personally wanted to address this challenge, and so I created Snippets — an innovative ed-tech social media platform. Snippets harnesses the power of artificial intelligence to offer engaging, bite-sized learning experiences that are as enjoyable as they are educational. With its AI-generated snippets structured in the 5W1H framework, Snippets makes learning not just accessible, but a delightful journey of discovery.
 
 ## Inspiration
-The inspiration for [Snippets](https://exploresnippets.today) stemmed from observing the **significant time young people spend on social media, often engaging with content lacking educational value.** Recognizing the potential to transform this screen time into meaningful learning experiences, I was motivated to develop an innovative ed-tech social media platform. The goal was to **address the growing knowledge gap and declining critical thinking skills by offering engaging, bite-sized educational content** that could compete with the addictive nature of traditional social media.
+The inspiration for [Snippets](https://trysnippets.today) stemmed from observing the **significant time young people spend on social media, often engaging with content lacking educational value.** Recognizing the potential to transform this screen time into meaningful learning experiences, I was motivated to develop an innovative ed-tech social media platform. The goal was to **address the growing knowledge gap and declining critical thinking skills by offering engaging, bite-sized educational content** that could compete with the addictive nature of traditional social media.
 
 ## What it does
-[Snippets](https://exploresnippets.today) is an AI-powered educational social media platform that offers:
+[Snippets](https://trysnippets.today) is an AI-powered educational social media platform that offers:
 - Engaging, bite-sized learning experiences in a social media like interface.
 - AI-generated educational snippets that are both enjoyable and informative.
 - Content structured in the 5W1H framework (Who, What, When, Where, Why, How).
@@ -77,7 +77,7 @@ Future development could also focus on:
 ## Conclusion
 Thank you, Convex, for hosting the Zero to One hackathon! This event provided an invaluable opportunity to bring Snippets to life. Your platform's powerful features, including scheduled functions, vector search, and full-text search capabilities, were instrumental in creating a robust and responsive educational social media experience. The hackathon not only challenged me to innovate but also showcased the potential of Convex in building modern, scalable applications. 
 
-As a token of gratitude, here is a special snippet for you 😄 - https://exploresnippets.today/snippet/k17c0ajj7ggn1n2zm1mycas4bn70zyq3
+As a token of gratitude, here is a special snippet for you 😄 - https://trysnippets.today/snippet/k17c0ajj7ggn1n2zm1mycas4bn70zyq3
 
 ### Other References
 - [Font - Satoshi](https://www.fontshare.com/fonts/cabinet-grotesk)

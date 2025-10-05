@@ -12,7 +12,7 @@ export const sendWelcomeEmail = internalAction({
     const { email, firstName } = args;
 
     const { data, error } = await resend.emails.send({
-      from: "Snippets <hello@exploresnippets.today>",
+      from: "Snippets <hello@trysnippets.today>",
       to: [email],
       subject: firstName
         ? `Welcome to Snippets, ${firstName}!`
@@ -20,7 +20,7 @@ export const sendWelcomeEmail = internalAction({
       html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
       <html dir="ltr" lang="en">
          <head>
-            <link rel="preload" as="image" href="https://www.exploresnippets.today/logo.png" />
+            <link rel="preload" as="image" href="https://www.trysnippets.today/logo.png" />
             <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
             <meta name="x-apple-disable-message-reformatting" />
          </head>
@@ -32,7 +32,7 @@ export const sendWelcomeEmail = internalAction({
                <tbody>
                   <tr style="width:100%">
                      <td>
-                        <img alt="Snippets logo" src="https://www.exploresnippets.today/logo.png" style="display:block;outline:none;border:none;text-decoration:none;margin:0 auto" width="170" height="170" />
+                        <img alt="Snippets logo" src="https://www.trysnippets.today/logo.png" style="display:block;outline:none;border:none;text-decoration:none;margin:0 auto" width="170" height="170" />
                         <p style="font-size:16px;line-height:26px;margin:16px 0">
                            ${firstName ? `Hi ${firstName}` : "Hi"},
                         </p>
@@ -46,7 +46,7 @@ export const sendWelcomeEmail = internalAction({
                            <tbody>
                               <tr>
                                  <td>
-                                    <a href="https://exploresnippets.today" style="line-height:100%;text-decoration:none;display:block;max-width:100%;mso-padding-alt:0px;background-color:#F37593;border-radius:3px;color:#fff;font-size:16px;text-align:center;padding:12px 12px 12px 12px" target="_blank">
+                                    <a href="https://trysnippets.today" style="line-height:100%;text-decoration:none;display:block;max-width:100%;mso-padding-alt:0px;background-color:#F37593;border-radius:3px;color:#fff;font-size:16px;text-align:center;padding:12px 12px 12px 12px" target="_blank">
                                        <span>
                                           <!--[if mso]><i style="mso-font-width:300%;mso-text-raise:18" hidden>&#8202;&#8202;</i><![endif]-->
                                        </span>
